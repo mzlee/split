@@ -1,0 +1,14 @@
+#include <ThisIsATest.h>
+
+int main(int argc, char **argv)
+{
+	if(email.received)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+

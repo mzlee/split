@@ -1,0 +1,61 @@
+\documentclass[11pt]{article}
+\usepackage{times,mathptm}
+\usepackage{anysize}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{fancyhdr}
+
+%% Custom Styles
+\newcommand{\setto}[1]{\def\varto{#1}}
+\newcommand{\setfrom}[1]{\def\varfrom{#1}}
+\newcommand{\setdate}[1]{\def\vardate{#1}}
+\newcommand{\setsubject}[1]{\def\varsubject{#1}}
+\newcommand{\setcc}[1]{\def\varcc{#1}}
+
+\newcommand{\makeheader}{
+\begin{tabular}{ll}
+\textbf{To:} & \varto \\ \\
+\textbf{From:} & \varfrom \\ \\
+\textbf{Date:} & \vardate \\ \\
+\textbf{Subject:} & \varsubject \\ \\
+\textbf{CC:} & \varcc \\ \\
+\end{tabular}
+}
+
+\newenvironment{overview}{\vspace{12pt}\textbf{Overview:} }{\vspace{12pt}}
+
+\setlength{\parindent}{0pt}
+\setdate{\today}
+
+%% Fancy Header
+\marginsize{2cm}{2cm}{2cm}{3cm}
+
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyhead[RO,RE]{Subject}
+\fancyhead[LO,LE]{Split-Dev}
+\fancyfoot[CO,CE]{\thepage}
+
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\footrulewidth}{0pt}
+
+%% Title
+\title{Split}
+\author{2260 Hayward \\
+Ann Arbor, MI 48109}
+\date{\today}
+%% Header
+\setto{Team HD}
+\setfrom{Authors, Split-Dev}
+\setsubject{The Subject}
+\setcc{Carbon Copy}
+
+\begin{document}
+
+\maketitle
+\makeheader
+
+\overview An overview of the rest of the material.
+
+\end{document}

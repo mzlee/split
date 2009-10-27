@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include <QStateMachine>
 #include "ui_MainWindow.h"
 #include "WebWindow.h"
 
@@ -14,6 +14,9 @@ public:
 	
 private slots:
 	
+        // setup finite state machine
+        void setupState();
+
 	//navigate the most recently selected window to the url in the address bar
 	//or create a new window and navigate 
 	void go();
@@ -22,7 +25,10 @@ private slots:
 	void newWindow();
 
 	//enters the clipping mode
-	void clippingMode();
+        void startClippingMode();
+
+        //exits the clipping mode
+        void exitClippingMode();
 
 	//moves the browser forward
 	void forward();
@@ -39,6 +45,9 @@ private slots:
 private:
 	//qt needs this to set up the ui
 	Ui::MainWindow ui;
+
+        // qt State Machine
+        QStateMachine machine;
 
 	//currentWindow points to the WebWindow that navigation commands will go to
 	WebWindow *currentWindow;

@@ -4,20 +4,35 @@
 
 MainWindow::MainWindow() : QDialog(){
 
-	//initialize cw to null
-	currentWindow = 0;
+        //initialize cw to null
+        currentWindow = 0;
 
-	//necessary call to setupUi
-	ui.setupUi( this );
-	
-	//connect the click() action of each button to a function
-	connect( ui.forwardButton, SIGNAL(clicked()), this, SLOT(forward()) );
-	connect( ui.backButton, SIGNAL(clicked()), this, SLOT(back()) );
-	connect( ui.newWindowButton, SIGNAL(clicked()), this, SLOT(newWindow()) );
-	connect( ui.clippingModeButton, SIGNAL(clicked()), this, SLOT(clippingMode()) );
-	connect( ui.restoreClipButton, SIGNAL(clicked()), this, SLOT(restoreClip()) );
-	connect( ui.goButton, SIGNAL(clicked()), this, SLOT(go()) );
+        //necessary call to setupUi
+        ui.setupUi( this );
+        setupState();
 
+        //connect the click() action of each button to a function
+        connect( ui.forwardButton, SIGNAL(clicked()), this, SLOT(forward()) );
+        connect( ui.backButton, SIGNAL(clicked()), this, SLOT(back()) );
+        connect( ui.newWindowButton, SIGNAL(clicked()), this, SLOT(newWindow()) );
+        connect( ui.restoreClipButton, SIGNAL(clicked()), this, SLOT(restoreClip()) );
+        connect( ui.goButton, SIGNAL(clicked()), this, SLOT(go()) );
+}
+
+void MainWindow::setupState(){
+        // Sets up the state machine
+        QState *normalMode = new QState();
+        QState *clippingMode = new QState();
+        normalMode->addTransition(ui.clippingModeButton, SIGNAL(clicked()), clippingMode);
+        clippingMode->addTransition(ui.clippingModeButton, SIGNAL(clicked()), normalMode);
+        normalMode->assignProperty(ui.clippingModeButton, "text", "Clipping Mode");
+        clippingMode->assignProperty(ui.clippingModeButton, "text", "Exit Clipping Mode");
+        machine.addState(normalMode);
+        machine.addState(clippingMode);
+        machine.setInitialState(normalMode);
+        connect( clippingMode, SIGNAL(entered()), this, SLOT(startClippingMode()) );
+        connect( clippingMode, SIGNAL(exited()), this, SLOT(exitClippingMode()) );
+        machine.start();
 }
 
 void MainWindow::go(){
@@ -47,9 +62,14 @@ void MainWindow::newWindow(){
 
 }
 
-void MainWindow::clippingMode(){
+void MainWindow::startClippingMode(){
 	//enter clipping mode
+        currentWindow->startClipping();
+}
 
+void MainWindow::exitClippingMode() {
+        //exit clipping mode
+        currentWindow->exitClipping();
 }
 
 void MainWindow::forward(){
@@ -64,7 +84,6 @@ void MainWindow::back(){
 
 void MainWindow::restoreClip(){
 	//if a clip is selected, restore it to full size
-
 }
 
 void MainWindow::setCurrentWindow( WebWindow *cw ){

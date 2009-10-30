@@ -19,6 +19,14 @@ WebWindow::WebWindow( QWidget *parent ) : QDialog( parent ){
 	
 	//if a WebWindow comes into focus, the MainWindow must know
 	connect( this, SIGNAL(wwFocus(WebWindow*)), parent, SLOT(setCurrentWindow(WebWindow*)) );
+
+        //set the label apperance
+        overlay_palette.setColor(QPalette::Base, QColor(128, 128, 128, 128));
+        overlay_palette.setColor(QPalette::Window, QColor(128, 128, 128, 128));
+        overlay_palette.setColor(QPalette::Background, QColor(128, 128, 128, 128));
+        overlay_palette.setColor(QPalette::Button, QColor(128, 128, 128, 128));
+        ui.ClickArea->setPalette(overlay_palette);
+        ui.ClickArea->setHidden(true);
 }
 
 void WebWindow::resizeEvent(QResizeEvent * e) {
@@ -26,40 +34,28 @@ void WebWindow::resizeEvent(QResizeEvent * e) {
         ui.ClickArea->setFixedSize(e->size());
 }
 
-//void WebWindow::recordMouseDown() {
-//
-//}
-//
-//void WebWindow::recordMouseUp() {
-//    ui.WebView->setGeometry(start_x, start_y, end_x, end_y);
-//}
-
 void WebWindow::startClipping() {
-        ui.ClickArea->setEnabled(true);
-        ui.ClickArea->show();
-        ui.ClickArea->setText("Clipping");
+    ui.ClickArea->update();
+    ui.ClickArea->setEnabled(true);
+    ui.ClickArea->show();
 }
 
 void WebWindow::exitClipping() {
-        ui.ClickArea->setDisabled(true);
-        ui.ClickArea->hide();
-        ui.ClickArea->setText("Not Clipping");
+    ui.ClickArea->setDisabled(true);
+    ui.ClickArea->hide();
+    ui.ClickArea->update();
 }
-
-//void WebWindow::saveWindowSize() {
-//        window_geometry = this->saveGeometry();
-//}
-//
-//void WebWindow::restoreWindowSize() {
-//        this->restoreGeometry(window_geometry);
-//}
 
 void WebWindow::setupState(){
         // Sets up the state machine
         QState *normalWindow = new QState();
+        QState *clippingWindow = new QState();
         QState *clippedWindow = new QState();
-        //how do we get the signal
+        //normalWindow->addTransition(ui.ClickArea, SIGNAL(mcStartCapture(MouseCaptureWidget*)), clippingWindow);
+        //clippingWindow->addTransition(ui.ClickArea, SIGNAL(mcEndCapture(MouseCaptureWidget*)), clippedWindow);
+        //clippedWindow->addTransition(this, SIGNAL(wwRestoreWindow(WebWindow*)), normalWindow);
         machine.addState(normalWindow);
+        machine.addState(clippingWindow);
         machine.addState(clippedWindow);
         machine.setInitialState(normalWindow);
         machine.start();
@@ -78,6 +74,7 @@ void WebWindow::changeEvent( QEvent *event ){
 		}else{
 			//if it did have focus, this means it's losing focus
 			focusCounter = false;
+                        emit wwRestoreWindow(this);
 		}
 		
 	}

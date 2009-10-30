@@ -9,9 +9,11 @@ INCLUDEPATH += .
 
 # Input
 HEADERS += MainWindow.h \
+    MouseCaptureWidget.h \
     WebWindow.h
 FORMS += MainWindow.ui \
     WebWindow.ui
 SOURCES += main.cpp \
     MainWindow.cpp \
+    MouseCaptureWidget.cpp \
     WebWindow.cpp

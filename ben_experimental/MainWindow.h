@@ -1,6 +1,5 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include <QObject>
 #include <QStateMachine>
 #include "ui_MainWindow.h"
 #include "WebWindow.h"

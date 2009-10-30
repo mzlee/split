@@ -83,7 +83,8 @@ void MainWindow::back(){
 }
 
 void MainWindow::restoreClip(){
-	//if a clip is selected, restore it to full size
+    //if a clip is selected, restore it to full size
+    currentWindow->removeMask();
 }
 
 void MainWindow::setCurrentWindow( WebWindow *cw ){

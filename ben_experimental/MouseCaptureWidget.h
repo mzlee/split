@@ -1,6 +1,5 @@
 #ifndef MOUSECAPTUREWIDGET_H
 #define MOUSECAPTUREWIDGET_H
-#include <QObject>
 #include <QWidget>
 #include <QRegion>
 #include <QPainter>
@@ -14,13 +13,11 @@ public:
 
         MouseCaptureWidget(QWidget* parent = 0);
 
-        QRegion getCapturedRegion();
-
 signals:
 
         void mcStartCapture(MouseCaptureWidget *mc);
 
-        void mcEndCapture(MouseCaptureWidget *mc);
+        void mcEndCapture(QRegion capturedRegion);
 
 protected:
 
@@ -39,9 +36,6 @@ private:
 
         QPoint start_point;
         QPoint end_point;
-
-        QRegion captured_region;
-
 };
 
 #endif // MOUSECAPTUREWIDGET_H

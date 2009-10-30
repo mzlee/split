@@ -1,7 +1,6 @@
 #ifndef WEBWINDOW_H
 #define WEBWINDOW_H
 #include "ui_WebWindow.h"
-#include <QObject>
 #include <QString>
 #include <QWidget>
 #include <QFocusEvent>
@@ -23,6 +22,10 @@ public:
 
         void exitClipping();
 
+        //this removes the basic mask
+        void removeMask();
+
+
 signals:
 	
 	//this is emitted when a window gains focus
@@ -42,6 +45,11 @@ protected:
 
         //this sets up the state machine on the web window
         void setupState();
+
+private slots:
+
+        //this creates the basic mask
+        void createMask(QRegion region);
 
 private:
 

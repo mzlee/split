@@ -5,10 +5,6 @@ MouseCaptureWidget::MouseCaptureWidget(QWidget* parent) : QWidget(parent) {
         penWidth = 1;
 }
 
-QRegion MouseCaptureWidget::getCapturedRegion() {
-        return captured_region;
-}
-
 void MouseCaptureWidget::paintEvent(QPaintEvent * ) {
     int xFlair = start_point.x() < end_point.x() ? 10 : -10;
     int yFlair = start_point.y() < end_point.y() ? 10 : -10;
@@ -34,8 +30,7 @@ void MouseCaptureWidget::mouseMoveEvent(QMouseEvent * event ) {
 
 void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent * event ) {
     end_point = event->pos();
-    captured_region = QRegion(QRect(start_point, end_point), QRegion::Rectangle);
-    emit(mcEndCapture(this));
+    emit(mcEndCapture(QRegion(QRect(start_point, end_point), QRegion::Rectangle)));
 }
 
 void MouseCaptureWidget::setupPainter(QPainter & painter) {

@@ -1,38 +1,46 @@
 #include "MouseCaptureWidget.h"
 
 MouseCaptureWidget::MouseCaptureWidget(QWidget* parent) : QWidget(parent) {
-        start_point = QPoint();
+        startPoint = QPoint();
+        endPoint = QPoint();
         penWidth = 1;
 }
 
+QRegion MouseCaptureWidget::getCapturedRegion() {
+    return QRegion(QRect(startPoint, endPoint), QRegion::Rectangle);
+}
+
 void MouseCaptureWidget::paintEvent(QPaintEvent * ) {
-    int xFlair = start_point.x() < end_point.x() ? 10 : -10;
-    int yFlair = start_point.y() < end_point.y() ? 10 : -10;
     QPainter painter(this);
     setupPainter(painter);
-    painter.drawLine(start_point.x() - xFlair, start_point.y(), end_point.x() +  xFlair, start_point.y());
-    painter.drawLine(start_point.x(), start_point.y() - yFlair, start_point.x(), end_point.y() + yFlair);
-    painter.drawLine(start_point.x() - xFlair, end_point.y(), end_point.x() + xFlair, end_point.y());
-    painter.drawLine(end_point.x(), start_point.y() - yFlair, end_point.x(), end_point.y() + yFlair);
+
+    int xFlair = startPoint.x() < endPoint.x() ? 10 : -10;
+    int yFlair = startPoint.y() < endPoint.y() ? 10 : -10;
+
+    painter.drawLine(startPoint.x() - xFlair, startPoint.y(), endPoint.x() +  xFlair, startPoint.y());
+    painter.drawLine(startPoint.x(), startPoint.y() - yFlair, startPoint.x(), endPoint.y() + yFlair);
+    painter.drawLine(startPoint.x() - xFlair, endPoint.y(), endPoint.x() + xFlair, endPoint.y());
+    painter.drawLine(endPoint.x(), startPoint.y() - yFlair, endPoint.x(), endPoint.y() + yFlair);
 }
 
 void MouseCaptureWidget::mousePressEvent(QMouseEvent * event ) {
     if (event->button() == Qt::LeftButton) {
-        start_point = event->pos();
+        startPoint = event->pos();
         emit(mcStartCapture(this));
     }
 }
 
 void MouseCaptureWidget::mouseMoveEvent(QMouseEvent * event ) {
-    end_point = event->pos();
+    endPoint = event->pos();
     update();
 }
 
 void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent * event ) {
-    end_point = event->pos();
-    emit(mcEndCapture(QRegion(QRect(start_point, end_point), QRegion::Rectangle)));
+    endPoint = event->pos();
+    //emit(mcEndCapture(QRegion(QRect(startPoint, endPoint), QRegion::Rectangle)));
 }
 
+//setup the painter brush
 void MouseCaptureWidget::setupPainter(QPainter & painter) {
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QPen(Qt::black, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));

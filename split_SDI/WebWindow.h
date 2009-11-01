@@ -15,9 +15,6 @@ class WebWindow : public QMainWindow {
 public:
 
 	WebWindow( QWidget *parent = 0 );
-	
-
-
 
 signals:
 	
@@ -31,18 +28,18 @@ protected:
 	
 	//this is a virtual event function that must be implemented
 	//(used to keep track of window focus)
-	void changeEvent( QEvent *event );
+        //void changeEvent( QEvent *event );
 
         //this is a virtual event function that updates the size of the webview and the mouse tracking
         void resizeEvent(QResizeEvent *);
 
-        //this sets up the state machine on the web window
-        void setupState();
-
 private slots:
 
-    //this creates the basic mask
-    void createMask(QRegion region);
+        //this creates the basic mask
+        void createMask(QRegion region);
+
+        //this removes the basic mask
+        void removeMask();
 	
 	//navigate the most recently selected window to the url in the address bar
 	//or create a new window and navigate 
@@ -52,7 +49,7 @@ private slots:
 	void newWindow();
 
 	//enters the clipping mode
-    void startClippingMode();
+        void startClippingMode();
 
 	//exits the clipping mode
 	void exitClippingMode();
@@ -65,30 +62,26 @@ private slots:
 
 	//restores a clip to its main size
 	void restoreClip();
+
 private:
 
-		//navigate the WebWindow's page to url
-		void navigate( QString url );
+        //this sets up the connection
+        void setupConnections();
 
-        void startClipping();
+        //this sets up the state machine on the web window
+        void setupState();
 
-        void exitClipping();
+        //navigate the WebWindow's page to url
+        void navigate( QString url );
 
-        //this removes the basic mask
-        void removeMask();
-		void setupConnections();
-
+        //the ui
         Ui::WebWindow ui;
 
-        QPalette overlay_palette;
-
-        bool focus;
-
-        // qt State Machine
+        //qt State Machine
         QStateMachine machine;
 
-        // window geometry
-        QByteArray window_geometry;
+        //window geometry
+        QByteArray windowGeometry;
 };
 
 #endif //WEBWINDOW_H

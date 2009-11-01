@@ -13,11 +13,11 @@ public:
 
         MouseCaptureWidget(QWidget* parent = 0);
 
+        QRegion getCapturedRegion();
+
 signals:
 
         void mcStartCapture(MouseCaptureWidget *mc);
-
-        void mcEndCapture(QRegion capturedRegion);
 
 protected:
 
@@ -34,8 +34,9 @@ private:
         void setupPainter(QPainter& painter);
         int penWidth;
 
-        QPoint start_point;
-        QPoint end_point;
+        QPoint startPoint;
+        QPoint endPoint;
+
 };
 
 #endif // MOUSECAPTUREWIDGET_H

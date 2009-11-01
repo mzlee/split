@@ -67,6 +67,7 @@ void WebWindow::resizeEvent(QResizeEvent * e) {
         ui.WebView->setFixedSize(e->size().width(), e->size().height() - 120);
         ui.ClickArea->setGeometry(ui.WebView->x(),ui.WebView->y(),ui.WebView->width(),ui.WebView->height());
         ui.controlBox->setGeometry(0, 0, e->size().width(), 100);
+        geometrySet = false;
     }
 }
 

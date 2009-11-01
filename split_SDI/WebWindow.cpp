@@ -38,7 +38,11 @@ void WebWindow::setupConnections(){
 
     connect( ui.actionNewWindow, SIGNAL(triggered()), this, SLOT(newWindow()) );
     connect( ui.actionRestoreWindow, SIGNAL(triggered()), this, SLOT(restoreClip()) );
-
+    connect( ui.actionGo, SIGNAL(triggered()), this, SLOT(go()) );
+    connect( ui.actionBack, SIGNAL(triggered()), this, SLOT(back()) );
+    connect( ui.actionForward, SIGNAL(triggered()), this, SLOT(forward()) );
+    connect( ui.actionReload, SIGNAL(triggered()), ui.WebView, SLOT(reload()) );
+    connect( ui.actionBack, SIGNAL(triggered()), ui.WebView, SLOT(stop()) );
 }
 
 void WebWindow::setupState(){

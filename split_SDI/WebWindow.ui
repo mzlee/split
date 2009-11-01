@@ -147,9 +147,20 @@
      <string>File</string>
     </property>
     <addaction name="actionNewWindow"/>
+    <addaction name="actionGo"/>
     <addaction name="actionRestoreWindow"/>
    </widget>
+   <widget class="QMenu" name="menuNavigation">
+    <property name="title">
+     <string>Navigation</string>
+    </property>
+    <addaction name="actionForward"/>
+    <addaction name="actionBack"/>
+    <addaction name="actionStop"/>
+    <addaction name="actionReload"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuNavigation"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNewWindow">
@@ -160,6 +171,31 @@
   <action name="actionRestoreWindow">
    <property name="text">
     <string>Restore Window</string>
+   </property>
+  </action>
+  <action name="actionForward">
+   <property name="text">
+    <string>Forward</string>
+   </property>
+  </action>
+  <action name="actionBack">
+   <property name="text">
+    <string>Back</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="text">
+    <string>Stop</string>
+   </property>
+  </action>
+  <action name="actionReload">
+   <property name="text">
+    <string>Reload</string>
+   </property>
+  </action>
+  <action name="actionGo">
+   <property name="text">
+    <string>Go</string>
    </property>
   </action>
  </widget>

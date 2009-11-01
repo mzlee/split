@@ -51,6 +51,8 @@ private slots:
         //this creates the basic mask
         void createMask(QRegion region);
 
+        //stores coordinates of mask
+        void storeMask(QRegion region);
 private:
 
         Ui::WebWindow ui;
@@ -64,6 +66,10 @@ private:
 
         // window geometry
         QByteArray window_geometry;
+
+        //Where the mask is
+        QRegion mask_region;
+        bool mask_region_set;
 };
 
 #endif //WEBWINDOW_H

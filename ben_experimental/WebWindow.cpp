@@ -16,10 +16,12 @@ WebWindow::WebWindow( QWidget *parent ) : QDialog( parent ){
 
 	//this window does not have focus
 	focusCounter = false; 
+
+        mask_region_set = false;
 	
 	//if a WebWindow comes into focus, the MainWindow must know
 	connect( this, SIGNAL(wwFocus(WebWindow*)), parent, SLOT(setCurrentWindow(WebWindow*)) );
-        connect( ui.ClickArea, SIGNAL(mcEndCapture(QRegion)), this, SLOT(createMask(QRegion)) );
+        connect( ui.ClickArea, SIGNAL(mcEndCapture(QRegion)), this, SLOT(storeMask(QRegion)) );
 
         //set the label apperance
         overlay_palette.setColor(QPalette::Base, QColor(128, 128, 128, 128));
@@ -42,6 +44,9 @@ void WebWindow::startClipping() {
 }
 
 void WebWindow::exitClipping() {
+    if(mask_region_set==true)
+        createMask(mask_region);
+
     ui.ClickArea->setDisabled(true);
     ui.ClickArea->hide();
     ui.ClickArea->update();
@@ -52,9 +57,15 @@ void WebWindow::createMask(QRegion region) {
     ui.WebView->blockSignals(true);
 }
 
+void WebWindow::storeMask(QRegion region) {
+    mask_region = region;
+    mask_region_set = true;
+}
+
 void WebWindow::removeMask() {
     clearMask();
     ui.WebView->blockSignals(false);
+    mask_region_set = false;
 }
 
 void WebWindow::setupState(){

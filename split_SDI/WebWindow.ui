@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>611</width>
-    <height>364</height>
+    <width>675</width>
+    <height>411</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,44 +22,63 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetNoConstraint</enum>
-      </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QPushButton" name="backButton">
-        <property name="text">
-         <string>Back</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLineEdit" name="addressBar">
+          <property name="text">
+           <string>http://</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="goButton">
+          <property name="text">
+           <string>Go</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="forwardButton">
-        <property name="text">
-         <string>Forward</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="addressBar">
-        <property name="text">
-         <string>http://</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="goButton">
-        <property name="text">
-         <string>Go</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="clippingModeButton">
-        <property name="text">
-         <string>Clipping Mode</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="backButton">
+          <property name="text">
+           <string>Back</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="forwardButton">
+          <property name="text">
+           <string>Forward</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="stopButton">
+          <property name="text">
+           <string>Stop</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="reloadButton">
+          <property name="text">
+           <string>Reload</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="clippingModeButton">
+          <property name="text">
+           <string>Clipping Mode</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
@@ -82,10 +101,10 @@
    <widget class="MouseCaptureWidget" name="ClickArea" native="true">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>130</y>
-      <width>251</width>
-      <height>161</height>
+      <x>10</x>
+      <y>80</y>
+      <width>651</width>
+      <height>281</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -101,7 +120,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>611</width>
+     <width>675</width>
      <height>19</height>
     </rect>
    </property>
@@ -110,12 +129,19 @@
      <string>File</string>
     </property>
     <addaction name="actionNewWindow"/>
+    <addaction name="actionRestoreWindow"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNewWindow">
    <property name="text">
     <string>New Window</string>
+   </property>
+  </action>
+  <action name="actionRestoreWindow">
+   <property name="text">
+    <string>Restore Window</string>
    </property>
   </action>
  </widget>

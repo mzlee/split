@@ -8,7 +8,7 @@
 WebWindow::WebWindow( QWidget *parent ) : QMainWindow( parent ){
 	
     
-
+	wwparent = parent;
 	//show the window
 	ui.setupUi( this );
 
@@ -27,7 +27,7 @@ WebWindow::WebWindow( QWidget *parent ) : QMainWindow( parent ){
 		
 		//setup state machine
 		setupState();
-		
+		ui.statusBar->showMessage("MESSAGE");
 	
 }
 
@@ -38,10 +38,19 @@ void WebWindow::setupConnections(){
         //connect the click() action of each button to a function
         connect( ui.forwardButton, SIGNAL(clicked()), this, SLOT(forward()) );
         connect( ui.backButton, SIGNAL(clicked()), this, SLOT(back()) );
-        //connect( ui.newWindowButton, SIGNAL(clicked()), this, SLOT(newWindow()) );
         //connect( ui.restoreClipButton, SIGNAL(clicked()), this, SLOT(restoreClip()) );
         connect( ui.goButton, SIGNAL(clicked()), this, SLOT(go()) );
+		connect( ui.reloadButton, SIGNAL(clicked()), ui.WebView, SLOT(reload()) );
+		
+		connect( ui.WebView, SIGNAL(statusBarMessage(const QString &)), this, SLOT(updateStatus(const QString &)));
+		
+		connect( ui.actionNewWindow, SIGNAL(triggered()), this, SLOT(newWindow()) );
+		connect( ui.actionRestoreWindow, SIGNAL(triggered()), this, SLOT(restoreClip()) );
 
+}
+
+void WebWindow::updateStatus(const QString &q){
+	//ui.statusBar->showMessage(q);
 }
 
 //if the window starts stretching infinitely... look here
@@ -117,9 +126,8 @@ void WebWindow::go(){
 }
 
 void WebWindow::newWindow(){
-
-	
-
+	WebWindow *w = new WebWindow(wwparent);
+	w->show();
 }
 
 void WebWindow::startClippingMode(){
@@ -134,12 +142,17 @@ void WebWindow::exitClippingMode() {
 
 void WebWindow::forward(){
 	//go forward in currentWindow
-
+	ui.WebView->forward();
 }
 
 void WebWindow::back(){
 	//go backwards in currentWindow
+	ui.WebView->back();
 
+}
+
+void WebWindow::reload(){
+	ui.WebView->reload();
 }
 
 void WebWindow::restoreClip(){

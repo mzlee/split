@@ -40,7 +40,9 @@ protected:
         void setupState();
 
 private slots:
-
+	
+	void updateStatus(const QString &q);
+	
     //this creates the basic mask
     void createMask(QRegion region);
 	
@@ -66,7 +68,9 @@ private slots:
 	//restores a clip to its main size
 	void restoreClip();
 private:
-
+		
+		void reload();
+		
 		//navigate the WebWindow's page to url
 		void navigate( QString url );
 
@@ -89,6 +93,8 @@ private:
 
         // window geometry
         QByteArray window_geometry;
+		
+		QWidget *wwparent;
 };
 
 #endif //WEBWINDOW_H

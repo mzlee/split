@@ -37,7 +37,6 @@ void MouseCaptureWidget::mouseMoveEvent(QMouseEvent * event ) {
 
 void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent * event ) {
     endPoint = event->pos();
-    //emit(mcEndCapture(QRegion(QRect(startPoint, endPoint), QRegion::Rectangle)));
 }
 
 //setup the painter brush

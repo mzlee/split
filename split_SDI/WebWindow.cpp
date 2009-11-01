@@ -7,30 +7,38 @@
 #include <iostream>
 
 WebWindow::WebWindow( QWidget *parent ) : QMainWindow( parent ){
-	
-    //setup the window
+
+    wwparent = parent;
+
+    //show the window
     ui.setupUi( this );
+
+    ui.ClickArea->lower();
+    ui.ClickArea->setHidden(true);
+
+    setupConnections();
 
     //setup state machine
     setupState();
 
-    //setup connections
-    setupConnections();
-
-    //setup mouse capture widget
-    ui.ClickArea->lower();
-    ui.ClickArea->setHidden(true);
-
+    ui.statusBar->showMessage("MESSAGE");
+    clipped = false;
+    geometrySet = false;
 }
 
 void WebWindow::setupConnections(){
-
     //connect the click() action of each button to a function
     connect( ui.forwardButton, SIGNAL(clicked()), this, SLOT(forward()) );
     connect( ui.backButton, SIGNAL(clicked()), this, SLOT(back()) );
     connect( ui.goButton, SIGNAL(clicked()), this, SLOT(go()) );
+    connect( ui.stopButton, SIGNAL(clicked()), ui.WebView, SLOT(stop()) );
+    connect( ui.reloadButton, SIGNAL(clicked()), ui.WebView, SLOT(reload()) );
+
+    connect( ui.WebView, SIGNAL(statusBarMessage(const QString &)), this, SLOT(updateStatus(const QString &)));
+
     connect( ui.actionNewWindow, SIGNAL(triggered()), this, SLOT(newWindow()) );
     connect( ui.actionRestoreWindow, SIGNAL(triggered()), this, SLOT(restoreClip()) );
+
 }
 
 void WebWindow::setupState(){
@@ -49,13 +57,17 @@ void WebWindow::setupState(){
     machine.start();
 }
 
+void WebWindow::updateStatus(const QString &message) {
+    ui.statusBar->showMessage(message);
+}
+
 //if the window starts stretching infinitely... look here
 void WebWindow::resizeEvent(QResizeEvent * e) {
-    ui.WebView->setFixedSize(e->size().width(), e->size().height() - 20);
-    ui.ClickArea->setFixedSize(e->size().width(), e->size().height() - 20);
-    //ui.horizontalLayout->setFixedSize(this->width()-20,ui.horizontalLayout->height);
-    //ui.WebView->setFixedSize(e->size());
-    //ui.ClickArea->setFixedSize(e->size());
+    if (!clipped) {
+        ui.WebView->setFixedSize(e->size().width(), e->size().height() - 120);
+        ui.ClickArea->setGeometry(ui.WebView->x(),ui.WebView->y(),ui.WebView->width(),ui.WebView->height());
+        ui.controlBox->setGeometry(0, 0, e->size().width(), 100);
+    }
 }
 
 void WebWindow::createMask(QRegion region) {
@@ -73,11 +85,15 @@ void WebWindow::go(){
 }
 
 void WebWindow::newWindow(){
-    //create a new window
+	WebWindow *w = new WebWindow(wwparent);
+	w->show();
 }
 
 void WebWindow::startClippingMode(){
     //enter clipping mode
+    if (geometrySet) {
+        restoreClip();
+    }
     ui.ClickArea->update();
     ui.ClickArea->setEnabled(true);
     ui.ClickArea->raise();
@@ -86,7 +102,18 @@ void WebWindow::startClippingMode(){
 
 void WebWindow::exitClippingMode() {
     //exit clipping mode
-    setMask(ui.ClickArea->getCapturedRegion());
+    clipped = true;
+    QRegion capturedRegion = ui.ClickArea->getCapturedRegion();
+    ui.controlBox->setHidden(true);
+
+    windowGeometry = ui.WebView->geometry();
+    mainGeometry = this->geometry();
+    geometrySet = true;
+
+    ui.WebView->setGeometry(-capturedRegion.boundingRect().left(), -capturedRegion.boundingRect().top(), ui.WebView->width(), ui.WebView->height());
+    this->setGeometry(mainGeometry.left(), mainGeometry.top(), capturedRegion.boundingRect().width(), capturedRegion.boundingRect().height() + 20);
+    setMask(QRegion(0, 0, capturedRegion.boundingRect().width(), capturedRegion.boundingRect().height(), QRegion::Rectangle));
+
     ui.ClickArea->setDisabled(true);
     ui.ClickArea->lower();
     ui.ClickArea->hide();
@@ -108,6 +135,11 @@ void WebWindow::back(){
     }
 }
 
+void WebWindow::reload(){
+        ui.WebView->reload();
+}
+
+
 void WebWindow::navigate( QString url ){
     //navigate to url
     //code injections possible?
@@ -120,6 +152,10 @@ void WebWindow::navigate( QString url ){
 
 void WebWindow::restoreClip(){
     removeMask();
+    ui.WebView->setGeometry(windowGeometry);
+    this->setGeometry(mainGeometry);
+    ui.controlBox->setVisible(true);
+    clipped = false;
     update();
 }
 

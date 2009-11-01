@@ -41,8 +41,10 @@ private slots:
         //this removes the basic mask
         void removeMask();
 	
-	//navigate the most recently selected window to the url in the address bar
-	//or create a new window and navigate 
+        //this updates the status bar
+	void updateStatus(const QString &q);
+	
+        //navigate the window to the url in the address bar
 	void go();
 
 	//opens a new top level window which contains a browser
@@ -65,6 +67,8 @@ private slots:
 
 private:
 
+        void reload();
+
         //this sets up the connection
         void setupConnections();
 
@@ -80,8 +84,16 @@ private:
         //qt State Machine
         QStateMachine machine;
 
-        //window geometry
-        QByteArray windowGeometry;
+        //saved geometry
+        QRect mainGeometry;
+        QRect windowGeometry;
+
+        //state flags
+        //TODO: Put this into the finite state machine
+        bool geometrySet;
+        bool clipped;
+
+        QWidget *wwparent;
 };
 
 #endif //WEBWINDOW_H

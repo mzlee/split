@@ -30,7 +30,7 @@ void MouseCaptureWidget::mouseMoveEvent(QMouseEvent * event ) {
 
 void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent * event ) {
     end_point = event->pos();
-    emit(mcEndCapture(QRegion(QRect(start_point, end_point), QRegion::Rectangle)));
+    emit(mcEndCapture(QRegion(QRect(start_point.x(),start_point.y(), end_point.x(),end_point.y()), QRegion::Rectangle)));
 }
 
 void MouseCaptureWidget::setupPainter(QPainter & painter) {

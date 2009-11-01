@@ -12,7 +12,7 @@ int main( int argc, char **argv ){
 	WebWindow ww(parent);
 	
 	ww.show();
-
+	
 	//qt requires this
 	return app.exec();
 

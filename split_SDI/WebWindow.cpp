@@ -27,6 +27,8 @@ WebWindow::WebWindow( QWidget *parent ) : QMainWindow( parent ){
 		
 		//setup state machine
 		setupState();
+		
+	
 }
 
 void WebWindow::setupConnections(){
@@ -44,8 +46,7 @@ void WebWindow::setupConnections(){
 
 //if the window starts stretching infinitely... look here
 void WebWindow::resizeEvent(QResizeEvent * e) {
-		ui.WebView->setFixedSize(this->width(), this->height()-20);
-		ui.ClickArea->setFixedSize(this->width(), this->height()-20);
+		ui.ClickArea->setGeometry(ui.WebView->x(),ui.WebView->y(),ui.WebView->width(),ui.WebView->height());
 		//ui.horizontalLayout->setFixedSize(this->width()-20,ui.horizontalLayout->height);
         //ui.WebView->setFixedSize(e->size());
         //ui.ClickArea->setFixedSize(e->size());

@@ -4,7 +4,7 @@
 #include <QUrl>
 #include <QWebView>
 #include <QWebHistory>
-#include <iostream>
+#include <QIcon>
 
 WebWindow::WebWindow( QWidget *parent ) : QMainWindow( parent ){
 
@@ -20,28 +20,26 @@ WebWindow::WebWindow( QWidget *parent ) : QMainWindow( parent ){
 
     //setup state machine
     setupState();
+    checkHistoryState();
 
-    ui.statusBar->showMessage("MESSAGE");
     clipped = false;
     geometrySet = false;
 }
 
 void WebWindow::setupConnections(){
     //connect the click() action of each button to a function
-    connect( ui.forwardButton, SIGNAL(clicked()), this, SLOT(forward()) );
     connect( ui.backButton, SIGNAL(clicked()), this, SLOT(back()) );
-    connect( ui.goButton, SIGNAL(clicked()), this, SLOT(go()) );
+    connect( ui.forwardButton, SIGNAL(clicked()), this, SLOT(forward()) );
+    connect( ui.reloadButton, SIGNAL(clicked()), this, SLOT(go()) );
     connect( ui.stopButton, SIGNAL(clicked()), ui.WebView, SLOT(stop()) );
-    connect( ui.reloadButton, SIGNAL(clicked()), ui.WebView, SLOT(reload()) );
 
     connect( ui.WebView, SIGNAL(statusBarMessage(const QString &)), this, SLOT(updateStatus(const QString &)));
 
     connect( ui.actionNewWindow, SIGNAL(triggered()), this, SLOT(newWindow()) );
     connect( ui.actionRestoreWindow, SIGNAL(triggered()), this, SLOT(restoreClip()) );
-    connect( ui.actionGo, SIGNAL(triggered()), this, SLOT(go()) );
+    connect( ui.actionReload, SIGNAL(triggered()), this, SLOT(go()) );
     connect( ui.actionBack, SIGNAL(triggered()), this, SLOT(back()) );
     connect( ui.actionForward, SIGNAL(triggered()), this, SLOT(forward()) );
-    connect( ui.actionReload, SIGNAL(triggered()), ui.WebView, SLOT(reload()) );
     connect( ui.actionBack, SIGNAL(triggered()), ui.WebView, SLOT(stop()) );
 }
 
@@ -70,7 +68,7 @@ void WebWindow::resizeEvent(QResizeEvent * e) {
     if (!clipped) {
         ui.WebView->setFixedSize(e->size().width(), e->size().height() - 120);
         ui.ClickArea->setGeometry(ui.WebView->x(),ui.WebView->y(),ui.WebView->width(),ui.WebView->height());
-        ui.controlBox->setGeometry(0, 0, e->size().width(), 100);
+        ui.NavigationBox->setGeometry(0, 0, e->size().width(), 100);
         geometrySet = false;
     }
 }
@@ -109,7 +107,7 @@ void WebWindow::exitClippingMode() {
     //exit clipping mode
     clipped = true;
     QRegion capturedRegion = ui.ClickArea->getCapturedRegion();
-    ui.controlBox->setHidden(true);
+    ui.NavigationBox->setHidden(true);
 
     windowGeometry = ui.WebView->geometry();
     mainGeometry = this->geometry();
@@ -131,6 +129,7 @@ void WebWindow::forward(){
     if (ui.WebView->history()->canGoForward()) {
         ui.WebView->history()->forward();
     }
+    checkHistoryState();
 }
 
 void WebWindow::back(){
@@ -138,6 +137,7 @@ void WebWindow::back(){
     if (ui.WebView->history()->canGoBack()) {
         ui.WebView->history()->back();
     }
+    checkHistoryState();
 }
 
 void WebWindow::reload(){
@@ -159,25 +159,28 @@ void WebWindow::restoreClip(){
     removeMask();
     ui.WebView->setGeometry(windowGeometry);
     this->setGeometry(mainGeometry);
-    ui.controlBox->setVisible(true);
+    ui.NavigationBox->setVisible(true);
     clipped = false;
     update();
 }
 
-/*
-//implementing a virtual function to make use of changeEvent
-void WebWindow::changeEvent( QEvent *event ){
-
-    //99 is the type returned when a window loses or gains focus
-    if(event->type() == 99){
-        //if it didn't previously have focus, it alerts the main window
-        //that it is getting focus
-        if(!focus){
-            focus = true;
-        }else{
-            //if it did have focus, this means it's losing focus
-            focus = false;
-        }
+void WebWindow::checkHistoryState() {
+    if (!setGoBack && ui.WebView->history()->canGoBack()) {
+        setGoBack = true;
+        ui.backButton->setEnabled(true);
+        ui.backButton->setIcon(QIcon(":/icons/BackButton.png"));
+    } else {
+        setGoBack = false;
+        ui.backButton->setDisabled(true);
+        ui.backButton->setIcon(QIcon(":/icons/BackButton.Disabled.png"));
+    }
+    if (!setGoForward) {
+        setGoForward = true;
+        ui.forwardButton->setEnabled(true);
+        ui.forwardButton->setIcon(QIcon(":/icons/ForwardButton.png"));
+    } else {
+        setGoForward = false;
+        ui.forwardButton->setEnabled(true);
+        ui.forwardButton->setIcon(QIcon(":/icons/ForwardButton.Disabled.png"));
     }
 }
-*/

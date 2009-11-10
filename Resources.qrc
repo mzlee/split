@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/icons" >
+        <file>Resources/BackIcon.png</file>
+        <file>Resources/ForwardIcon.png</file>
+        <file>Resources/BackIcon.Disabled.png</file>
+        <file>Resources/ForwardIcon.Disabled.png</file>
+        <file>Resources/StopButton.png</file>
+        <file>Resources/RefreshButton.png</file>
+    </qresource>
+</RCC>

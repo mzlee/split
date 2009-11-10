@@ -67,6 +67,9 @@ private slots:
 
 private:
 
+        //checks the webkit history and sets navigation accordingly
+        void checkHistoryState();
+
         void reload();
 
         //this sets up the connection
@@ -90,6 +93,8 @@ private:
 
         //state flags
         //TODO: Put this into the finite state machine
+        bool setGoBack;
+        bool setGoForward;
         bool geometrySet;
         bool clipped;
 

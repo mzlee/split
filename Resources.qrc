@@ -6,5 +6,6 @@
         <file>Resources/ForwardIcon.Disabled.png</file>
         <file>Resources/StopButton.png</file>
         <file>Resources/RefreshButton.png</file>
+        <file>Resources/ClipIcon.png</file>
     </qresource>
 </RCC>

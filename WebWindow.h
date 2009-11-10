@@ -48,7 +48,7 @@ private slots:
 	void go();
 
 	//opens a new top level window which contains a browser
-	void newWindow();
+        void newWindow();
 
 	//enters the clipping mode
         void startClippingMode();
@@ -67,8 +67,10 @@ private slots:
 
 private:
 
-        //checks the webkit history and sets navigation accordingly
-        void checkHistoryState();
+        void resizeAddressBox();
+
+        //checks the webkit and sets values accordingly
+        void checkWebKitState();
 
         void reload();
 
@@ -93,8 +95,6 @@ private:
 
         //state flags
         //TODO: Put this into the finite state machine
-        bool setGoBack;
-        bool setGoForward;
         bool geometrySet;
         bool clipped;
 

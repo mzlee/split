@@ -20,7 +20,7 @@ WebWindow::WebWindow( QWidget *parent ) : QMainWindow( parent ){
 
     //setup state machine
     setupState();
-    checkHistoryState();
+    checkWebKitState();
 
     clipped = false;
     geometrySet = false;
@@ -33,6 +33,8 @@ void WebWindow::setupConnections(){
     connect( ui.reloadButton, SIGNAL(clicked()), this, SLOT(go()) );
     connect( ui.stopButton, SIGNAL(clicked()), ui.WebView, SLOT(stop()) );
 
+    connect( ui.WebView, SIGNAL(loadStarted()), this, SLOT(updateStatus(const QString &)) );
+    //connect( ui.WebView, SIGNAL(linkClicked(QUrl)), this, SLOT(newWindow(const QUrl &)) );
     connect( ui.WebView, SIGNAL(statusBarMessage(const QString &)), this, SLOT(updateStatus(const QString &)));
 
     connect( ui.actionNewWindow, SIGNAL(triggered()), this, SLOT(newWindow()) );
@@ -66,11 +68,19 @@ void WebWindow::updateStatus(const QString &message) {
 //if the window starts stretching infinitely... look here
 void WebWindow::resizeEvent(QResizeEvent * e) {
     if (!clipped) {
-        ui.WebView->setFixedSize(e->size().width(), e->size().height() - 120);
+        ui.WebView->setFixedSize(e->size().width(), e->size().height() - 54);
         ui.ClickArea->setGeometry(ui.WebView->x(),ui.WebView->y(),ui.WebView->width(),ui.WebView->height());
-        ui.NavigationBox->setGeometry(0, 0, e->size().width(), 100);
+        ui.NavigationBox->setGeometry(0, 0, e->size().width(), 34);
+        resizeAddressBox();
         geometrySet = false;
     }
+}
+
+void WebWindow::resizeAddressBox() {
+    ui.clippingModeButton->setGeometry(ui.NavigationBox->size().width() - 33, 0, 32, 32);
+    ui.stopButton->setGeometry(ui.NavigationBox->size().width() - 64, 0, 32, 32);
+    ui.reloadButton->setGeometry(ui.NavigationBox->size().width() - 95, 0 , 32, 32);
+    ui.addressBar->setGeometry(68, 3, ui.NavigationBox->size().width() - 168, 28);
 }
 
 void WebWindow::createMask(QRegion region) {
@@ -129,7 +139,7 @@ void WebWindow::forward(){
     if (ui.WebView->history()->canGoForward()) {
         ui.WebView->history()->forward();
     }
-    checkHistoryState();
+    checkWebKitState();
 }
 
 void WebWindow::back(){
@@ -137,7 +147,7 @@ void WebWindow::back(){
     if (ui.WebView->history()->canGoBack()) {
         ui.WebView->history()->back();
     }
-    checkHistoryState();
+    checkWebKitState();
 }
 
 void WebWindow::reload(){
@@ -153,6 +163,7 @@ void WebWindow::navigate( QString url ){
         ui.addressBar->setText(url);
     }
     ui.WebView->setUrl(QUrl(url));
+    checkWebKitState();
 }
 
 void WebWindow::restoreClip(){
@@ -164,23 +175,20 @@ void WebWindow::restoreClip(){
     update();
 }
 
-void WebWindow::checkHistoryState() {
-    if (!setGoBack && ui.WebView->history()->canGoBack()) {
-        setGoBack = true;
+void WebWindow::checkWebKitState() {
+    if (ui.WebView->history()->canGoBack()) {
         ui.backButton->setEnabled(true);
         ui.backButton->setIcon(QIcon(":/icons/BackButton.png"));
     } else {
-        setGoBack = false;
         ui.backButton->setDisabled(true);
         ui.backButton->setIcon(QIcon(":/icons/BackButton.Disabled.png"));
     }
-    if (!setGoForward) {
-        setGoForward = true;
+    if (ui.WebView->history()->canGoBack()) {
         ui.forwardButton->setEnabled(true);
         ui.forwardButton->setIcon(QIcon(":/icons/ForwardButton.png"));
     } else {
-        setGoForward = false;
         ui.forwardButton->setEnabled(true);
         ui.forwardButton->setIcon(QIcon(":/icons/ForwardButton.Disabled.png"));
     }
+    ui.addressBar->setText(ui.WebView->url().toString());
 }

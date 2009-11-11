@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Split</string>
   </property>
   <widget class="QWidget" name="mainContent">
    <widget class="MouseCaptureWidget" name="ClickArea" native="true">
@@ -276,9 +276,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <class>QWebPage</class>
+   <extends>QObject</extends>
+   <header>QtWebKit/QWebPage</header>
   </customwidget>
   <customwidget>
    <class>MouseCaptureWidget</class>
@@ -289,12 +289,12 @@
  </customwidgets>
  <tabstops>
   <tabstop>reloadButton</tabstop>
-  <tabstop>backButton</tabstop>
-  <tabstop>forwardButton</tabstop>
   <tabstop>stopButton</tabstop>
+  <tabstop>clippingModeButton</tabstop>
   <tabstop>WebView</tabstop>
   <tabstop>addressBar</tabstop>
-  <tabstop>clippingModeButton</tabstop>
+  <tabstop>backButton</tabstop>
+  <tabstop>forwardButton</tabstop>
  </tabstops>
  <resources>
   <include location="Resources.qrc"/>

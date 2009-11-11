@@ -13,7 +13,6 @@ int main( int argc, char **argv ){
 
     //make and show the main window
     WebWindow ww(parent);
-	
     ww.show();
 	
     //qt requires this

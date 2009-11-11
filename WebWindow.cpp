@@ -3,6 +3,7 @@
 #include <QGraphicsWidget>
 #include <QUrl>
 #include <QWebView>
+#include <QWebPage>
 #include <QWebHistory>
 #include <QIcon>
 
@@ -191,4 +192,5 @@ void WebWindow::setWebKitState() {
         ui.forwardButton->setIcon(QIcon(":/icons/forward.disabled"));
     }
     ui.addressBar->setText(ui.WebView->url().toString());
+    this->setWindowTitle("Split -- " + ui.WebView->title());
 }

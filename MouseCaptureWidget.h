@@ -18,7 +18,6 @@ public:
 signals:
 
         void mcStartCapture(MouseCaptureWidget *mc);
-        void mcEndCapture(QRegion);
 
 protected:
 

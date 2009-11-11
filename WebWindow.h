@@ -7,6 +7,7 @@
 #include <QStateMachine>
 #include <QByteArray>
 #include <QMainWindow>
+#include <vector>
 
 class WebWindow : public QMainWindow {
 
@@ -38,6 +39,9 @@ private slots:
         //this creates the basic mask
         void createMask(QRegion region);
 
+        //stores the mask to later be used
+        void storeMask(QRegion region);
+
         //this removes the basic mask
         void removeMask();
 	
@@ -55,6 +59,8 @@ private slots:
 
 	//exits the clipping mode
 	void exitClippingMode();
+
+        void setClip(QRegion region);
 
 	//moves the browser forward
 	void forward();
@@ -78,6 +84,9 @@ private:
         //navigate the WebWindow's page to url
         void navigate( QString url );
 
+        //let other clips know that this window is no longer a clip
+        void removeThisSharedClipFromOtherClips();
+
         //the ui
         Ui::WebWindow ui;
 
@@ -87,6 +96,10 @@ private:
         //saved geometry
         QRect mainGeometry;
         QRect windowGeometry;
+
+        //masks
+        std::vector<QRegion> storedMasks;
+        std::vector<WebWindow*> sharedClips;
 
         //state flags
         //TODO: Put this into the finite state machine

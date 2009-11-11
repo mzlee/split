@@ -7,6 +7,18 @@ MouseCaptureWidget::MouseCaptureWidget(QWidget* parent) : QWidget(parent) {
 }
 
 QRegion MouseCaptureWidget::getCapturedRegion() {
+    if(startPoint.x() > endPoint.x())
+    {
+        int temp = startPoint.x();
+        startPoint.setX(endPoint.x());
+        endPoint.setX(temp);
+    }
+    if(startPoint.y() > endPoint.y())
+    {
+        int temp = startPoint.y();
+        startPoint.setY(endPoint.y());
+        endPoint.setY(temp);
+    }
     return QRegion(QRect(startPoint, endPoint), QRegion::Rectangle);
 }
 
@@ -37,6 +49,7 @@ void MouseCaptureWidget::mouseMoveEvent(QMouseEvent * event ) {
 
 void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent * event ) {
     endPoint = event->pos();
+    emit(mcEndCapture(QRegion(QRect(startPoint, endPoint), QRegion::Rectangle)));
 }
 
 //setup the painter brush

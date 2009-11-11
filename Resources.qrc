@@ -1,11 +1,11 @@
 <RCC>
     <qresource prefix="/icons" >
-        <file>Resources/BackIcon.png</file>
-        <file>Resources/ForwardIcon.png</file>
-        <file>Resources/BackIcon.Disabled.png</file>
-        <file>Resources/ForwardIcon.Disabled.png</file>
-        <file>Resources/StopButton.png</file>
-        <file>Resources/RefreshButton.png</file>
-        <file>Resources/ClipIcon.png</file>
+        <file alias="back" >Resources/BackIcon.png</file>
+        <file alias="forward" >Resources/ForwardIcon.png</file>
+        <file alias="back.disabled" >Resources/BackIcon.Disabled.png</file>
+        <file alias="forward.disabled" >Resources/ForwardIcon.Disabled.png</file>
+        <file alias="stop" >Resources/StopButton.png</file>
+        <file alias="refresh" >Resources/RefreshButton.png</file>
+        <file alias="clip" >Resources/ClipIcon.png</file>
     </qresource>
 </RCC>

@@ -11,7 +11,7 @@ INCLUDEPATH += .
 HEADERS += MouseCaptureWidget.h \
     WebWindow.h
 FORMS += WebWindow.ui
-SOURCES += main.cpp \
-    MouseCaptureWidget.cpp \
-    WebWindow.cpp
+SOURCES += MouseCaptureWidget.cpp \
+    WebWindow.cpp \
+    main.cpp
 RESOURCES += Resources.qrc

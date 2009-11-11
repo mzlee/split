@@ -6,7 +6,7 @@
 #include <QWebHistory>
 #include <QIcon>
 
-WebWindow::WebWindow( QWidget *parent ) : QMainWindow( parent ){
+WebWindow::WebWindow( QWidget *parent, QString defaultUrl ) : QMainWindow( parent ){
 
     wwparent = parent;
 
@@ -20,10 +20,11 @@ WebWindow::WebWindow( QWidget *parent ) : QMainWindow( parent ){
 
     //setup state machine
     setupState();
-    checkWebKitState();
 
     clipped = false;
     geometrySet = false;
+
+    navigate(defaultUrl);
 }
 
 void WebWindow::setupConnections(){
@@ -33,7 +34,7 @@ void WebWindow::setupConnections(){
     connect( ui.reloadButton, SIGNAL(clicked()), this, SLOT(go()) );
     connect( ui.stopButton, SIGNAL(clicked()), ui.WebView, SLOT(stop()) );
 
-    connect( ui.WebView, SIGNAL(loadStarted()), this, SLOT(updateStatus(const QString &)) );
+    connect( ui.WebView, SIGNAL(loadFinished(bool)), this, SLOT(setWebKitState()) );
     //connect( ui.WebView, SIGNAL(linkClicked(QUrl)), this, SLOT(newWindow(const QUrl &)) );
     connect( ui.WebView, SIGNAL(statusBarMessage(const QString &)), this, SLOT(updateStatus(const QString &)));
 
@@ -51,8 +52,10 @@ void WebWindow::setupState(){
     QState *clippingMode = new QState();
     normalMode->addTransition(ui.clippingModeButton, SIGNAL(clicked()), clippingMode);
     clippingMode->addTransition(ui.clippingModeButton, SIGNAL(clicked()), normalMode);
-    normalMode->assignProperty(ui.clippingModeButton, "text", "Clipping Mode");
-    clippingMode->assignProperty(ui.clippingModeButton, "text", "Exit Clipping Mode");
+    normalMode->assignProperty(ui.clippingModeButton, "checked", false);
+    normalMode->assignProperty(ui.clippingModeButton, "icon", ":icons/clip");
+    clippingMode->assignProperty(ui.clippingModeButton, "checked", true);
+    clippingMode->assignProperty(ui.clippingModeButton, "icon", ":icons/clip");
     machine.addState(normalMode);
     machine.addState(clippingMode);
     machine.setInitialState(normalMode);
@@ -139,7 +142,6 @@ void WebWindow::forward(){
     if (ui.WebView->history()->canGoForward()) {
         ui.WebView->history()->forward();
     }
-    checkWebKitState();
 }
 
 void WebWindow::back(){
@@ -147,7 +149,6 @@ void WebWindow::back(){
     if (ui.WebView->history()->canGoBack()) {
         ui.WebView->history()->back();
     }
-    checkWebKitState();
 }
 
 void WebWindow::reload(){
@@ -163,7 +164,6 @@ void WebWindow::navigate( QString url ){
         ui.addressBar->setText(url);
     }
     ui.WebView->setUrl(QUrl(url));
-    checkWebKitState();
 }
 
 void WebWindow::restoreClip(){
@@ -175,20 +175,20 @@ void WebWindow::restoreClip(){
     update();
 }
 
-void WebWindow::checkWebKitState() {
+void WebWindow::setWebKitState() {
     if (ui.WebView->history()->canGoBack()) {
         ui.backButton->setEnabled(true);
-        ui.backButton->setIcon(QIcon(":/icons/BackButton.png"));
+        ui.backButton->setIcon(QIcon(":/icons/back"));
     } else {
         ui.backButton->setDisabled(true);
-        ui.backButton->setIcon(QIcon(":/icons/BackButton.Disabled.png"));
+        ui.backButton->setIcon(QIcon(":/icons/back.disabled"));
     }
-    if (ui.WebView->history()->canGoBack()) {
+    if (ui.WebView->history()->canGoForward()) {
         ui.forwardButton->setEnabled(true);
-        ui.forwardButton->setIcon(QIcon(":/icons/ForwardButton.png"));
+        ui.forwardButton->setIcon(QIcon(":/icons/forward"));
     } else {
-        ui.forwardButton->setEnabled(true);
-        ui.forwardButton->setIcon(QIcon(":/icons/ForwardButton.Disabled.png"));
+        ui.forwardButton->setDisabled(true);
+        ui.forwardButton->setIcon(QIcon(":/icons/forward.disabled"));
     }
     ui.addressBar->setText(ui.WebView->url().toString());
 }

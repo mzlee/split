@@ -2,12 +2,17 @@
 
 MouseCaptureWidget::MouseCaptureWidget(QWidget* parent) : QWidget(parent) {
         startPoint = QPoint();
-        endPoint = QPoint();
+        endPoint = QPoint(size().width(), size().height());
         penWidth = 1;
+        update();
 }
 
 QRegion MouseCaptureWidget::getCapturedRegion() {
-    return QRegion(QRect(startPoint, endPoint), QRegion::Rectangle);
+    int l = startPoint.x() < endPoint.x() ? startPoint.x() : endPoint.x();
+    int t = startPoint.y() < endPoint.y() ? startPoint.y() : endPoint.y();
+    int w = startPoint.x() > endPoint.x() ? startPoint.x() - l : endPoint.x() - l;
+    int h = startPoint.y() > endPoint.y() ? startPoint.y() - t : endPoint.y() - t;
+    return QRegion(QRect(l, t, w, h), QRegion::Rectangle);
 }
 
 void MouseCaptureWidget::paintEvent(QPaintEvent * ) {

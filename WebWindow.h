@@ -14,7 +14,7 @@ class WebWindow : public QMainWindow {
 
 public:
 
-	WebWindow( QWidget *parent = 0 );
+        WebWindow( QWidget *parent = 0, QString defaultUrl = "about:blank" );
 
 signals:
 	
@@ -65,23 +65,24 @@ private slots:
 	//restores a clip to its main size
 	void restoreClip();
 
+        //checks the webkit and sets values accordingly
+        void setWebKitState();
+
 private:
 
         void resizeAddressBox();
 
-        //checks the webkit and sets values accordingly
-        void checkWebKitState();
-
         void reload();
+
+        //navigate the WebWindow's page to url
+        void navigate( QString url );
+
 
         //this sets up the connection
         void setupConnections();
 
         //this sets up the state machine on the web window
         void setupState();
-
-        //navigate the WebWindow's page to url
-        void navigate( QString url );
 
         //the ui
         Ui::WebWindow ui;

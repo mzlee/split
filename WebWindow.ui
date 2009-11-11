@@ -70,7 +70,7 @@
      <item>
       <layout class="QHBoxLayout" name="actionBar">
        <property name="spacing">
-        <number>-1</number>
+        <number>6</number>
        </property>
        <item>
         <widget class="QLineEdit" name="addressBar">
@@ -91,7 +91,7 @@
      <item>
       <layout class="QHBoxLayout" name="navigationBar">
        <property name="spacing">
-        <number>-1</number>
+        <number>6</number>
        </property>
        <item>
         <widget class="QPushButton" name="backButton">
@@ -139,7 +139,7 @@
      <x>0</x>
      <y>0</y>
      <width>675</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

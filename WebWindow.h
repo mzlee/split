@@ -1,5 +1,6 @@
 #ifndef WEBWINDOW_H
 #define WEBWINDOW_H
+
 #include "ui_WebWindow.h"
 #include <QString>
 #include <QWidget>

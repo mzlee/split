@@ -4,6 +4,7 @@
 #include <QUrl>
 #include <QWebView>
 #include <QWebPage>
+#include <QWebFrame>
 #include <QWebHistory>
 #include <QIcon>
 
@@ -24,7 +25,6 @@ WebWindow::WebWindow( QWidget *parent, QString defaultUrl ) : QMainWindow( paren
 
     clipped = false;
     geometrySet = false;
-
     navigate(defaultUrl);
 }
 
@@ -151,11 +151,6 @@ void WebWindow::back(){
         ui.WebView->history()->back();
     }
 }
-
-void WebWindow::reload(){
-        ui.WebView->reload();
-}
-
 
 void WebWindow::navigate( QString url ){
     //navigate to url

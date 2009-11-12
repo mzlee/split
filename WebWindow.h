@@ -72,11 +72,8 @@ private:
 
         void resizeAddressBox();
 
-        void reload();
-
         //navigate the WebWindow's page to url
         void navigate( QString url );
-
 
         //this sets up the connection
         void setupConnections();

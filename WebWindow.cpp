@@ -8,12 +8,14 @@
 #include <QWebHistory>
 #include <QIcon>
 
-WebWindow::WebWindow( QWidget *parent, QString defaultUrl ) : QMainWindow( parent ){
+WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUrl ) : QMainWindow( parent ){
 
     wwparent = parent;
 
     //show the window
     ui.setupUi( this );
+    cookieJar = jar;
+    ui.WebView->page()->networkAccessManager()->setCookieJar(jar);
 
     ui.ClickArea->lower();
     ui.ClickArea->setHidden(true);
@@ -102,7 +104,7 @@ void WebWindow::go(){
 }
 
 void WebWindow::newWindow(){
-	WebWindow *w = new WebWindow(wwparent);
+        WebWindow *w = new WebWindow(wwparent, cookieJar);
 	w->show();
 }
 

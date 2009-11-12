@@ -5,7 +5,6 @@
 #include <QWidget>
 #include <QFocusEvent>
 #include <QStateMachine>
-#include <QByteArray>
 #include <QMainWindow>
 
 class WebWindow : public QMainWindow {
@@ -14,7 +13,7 @@ class WebWindow : public QMainWindow {
 
 public:
 
-        WebWindow( QWidget *parent = 0, QString defaultUrl = "about:blank" );
+        WebWindow( QWidget *parent = 0, QNetworkCookieJar *jar = 0, QString defaultUrl = "about:blank" );
 
 signals:
 	
@@ -97,6 +96,7 @@ private:
         bool clipped;
 
         QWidget *wwparent;
+        QNetworkCookieJar *cookieJar;
 };
 
 #endif //WEBWINDOW_H

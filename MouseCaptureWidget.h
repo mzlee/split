@@ -2,6 +2,7 @@
 #define MOUSECAPTUREWIDGET_H
 #include <QWidget>
 #include <QRegion>
+#include <QPolygon>
 #include <QPainter>
 #include <QMouseEvent>
 
@@ -18,6 +19,7 @@ public:
 signals:
 
         void mcStartCapture(MouseCaptureWidget *mc);
+        void mcEndCapture(QRegion);
 
 protected:
 
@@ -37,6 +39,7 @@ private:
         QPoint startPoint;
         QPoint endPoint;
 
+        QPolygon polygon;
 };
 
 #endif // MOUSECAPTUREWIDGET_H

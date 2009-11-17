@@ -6,6 +6,7 @@
 #include <QFocusEvent>
 #include <QStateMachine>
 #include <QMainWindow>
+#include <QVector>
 
 class WebWindow : public QMainWindow {
 
@@ -39,7 +40,10 @@ private slots:
 
         //this removes the basic mask
         void removeMask();
-	
+
+        //this stores the mask for later use
+        void storeMask(QRegion region);
+
         //this updates the status bar
 	void updateStatus(const QString &q);
 	
@@ -54,6 +58,9 @@ private slots:
 
 	//exits the clipping mode
 	void exitClippingMode();
+
+        //sets a clip
+        void setClip(QRegion region);
 
 	//moves the browser forward
 	void forward();
@@ -80,6 +87,9 @@ private:
         //this sets up the state machine on the web window
         void setupState();
 
+        //let other clips know that this window is no longer a clip
+        void destroySharedClips();
+
         //the ui
         Ui::WebWindow ui;
 
@@ -90,8 +100,11 @@ private:
         QRect mainGeometry;
         QRect windowGeometry;
 
+        //masks
+        QVector<QRegion> storedMasks;
+        QVector<WebWindow*> sharedClips;
+
         //state flags
-        //TODO: Put this into the finite state machine
         bool geometrySet;
         bool clipped;
 

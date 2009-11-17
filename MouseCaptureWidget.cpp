@@ -42,6 +42,21 @@ void MouseCaptureWidget::mouseMoveEvent(QMouseEvent * event ) {
 
 void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent * event ) {
     endPoint = event->pos();
+    if((startPoint - endPoint).manhattanLength() > 5)
+    {
+        emit(mcEndCapture(QRegion(QRect(startPoint, endPoint), QRegion::Rectangle)));
+        return;
+    }
+
+    for(int i=0; i<polygon.size(); i++)
+    {
+        if((startPoint - polygon[i]).manhattanLength() < 20)
+        {
+            emit(mcEndCapture(QRegion(polygon)));
+            return;
+        }
+    }
+    polygon << startPoint;
 }
 
 //setup the painter brush

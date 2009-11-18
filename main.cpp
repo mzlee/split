@@ -13,7 +13,7 @@ int main( int argc, char **argv ){
     QWidget *parent = new QWidget();
     QNetworkCookieJar* cookieJar = new QNetworkCookieJar(parent);
     //make and show the main window
-    WebWindow ww(parent, cookieJar);
+    WebWindow ww(parent, cookieJar, "http://google.com");
     ww.show();
     //qt requires this
     return app.exec();

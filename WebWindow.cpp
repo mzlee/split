@@ -8,8 +8,7 @@
 #include <QWebHistory>
 #include <QIcon>
 
-WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUrl ) : QMainWindow( parent ){
-
+WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUrl ) : QMainWindow( parent ) {
     wwparent = parent;
 
     //show the window
@@ -30,6 +29,7 @@ WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUr
     navigate(defaultUrl);
 }
 
+
 void WebWindow::setupConnections(){
     //connect the click() action of each button to a function
     connect( ui.backButton, SIGNAL(clicked()), this, SLOT(back()) );
@@ -38,7 +38,7 @@ void WebWindow::setupConnections(){
     connect( ui.stopButton, SIGNAL(clicked()), ui.WebView, SLOT(stop()) );
 
     connect( ui.WebView, SIGNAL(loadFinished(bool)), this, SLOT(setWebKitState()) );
-    //connect( ui.WebView, SIGNAL(linkClicked(QUrl)), this, SLOT(newWindow(const QUrl &)) );
+    connect( ui.WebView, SIGNAL(linkClicked(QUrl)), this, SLOT(newWindow(const QUrl &)) );
     connect( ui.WebView, SIGNAL(statusBarMessage(const QString &)), this, SLOT(updateStatus(const QString &)));
 
     connect( ui.actionNewWindow, SIGNAL(triggered()), this, SLOT(newWindow()) );
@@ -106,16 +106,21 @@ void WebWindow::removeMask() {
    ui.WebView->blockSignals(false);
 }
 
-void WebWindow::go(){
+void WebWindow::go() {
     navigate(ui.addressBar->text());
 }
 
-void WebWindow::newWindow(){
-        WebWindow *w = new WebWindow(wwparent, cookieJar);
-	w->show();
+void WebWindow::newWindow(const QUrl & url) {
+    newWindow(url.toString());
 }
 
-void WebWindow::startClippingMode(){
+void WebWindow::newWindow(const QString & url) {
+    WebWindow *w = new WebWindow(wwparent, cookieJar, url);
+    w->show();
+    w->setFocus();
+}
+
+void WebWindow::startClippingMode() {
     //enter clipping mode
     if (geometrySet) {
         restoreClip();
@@ -131,35 +136,13 @@ void WebWindow::startClippingMode(){
 
 
 void WebWindow::exitClippingMode() {
-/*
-    //exit clipping mode
-    clipped = true;
-    QRegion capturedRegion = ui.ClickArea->getCapturedRegion();
-    ui.NavigationBox->setHidden(true);
-
-    windowGeometry = ui.WebView->geometry();
-    mainGeometry = this->geometry();
-    geometrySet = true;
-
-    ui.WebView->setGeometry(-capturedRegion.boundingRect().left(), -capturedRegion.boundingRect().top(), ui.WebView->width(), ui.WebView->height());
-    this->setGeometry(mainGeometry.left(), mainGeometry.top(), capturedRegion.boundingRect().width(), capturedRegion.boundingRect().height() + 20);
-    setMask(QRegion(0, 0, capturedRegion.boundingRect().width(), capturedRegion.boundingRect().height(), QRegion::Rectangle));
-
-    ui.ClickArea->setDisabled(true);
-    ui.ClickArea->lower();
-    ui.ClickArea->hide();
-    ui.ClickArea->update();
-}
-*/
     //Combine masks that intersect
-    for (int i=0; i<storedMasks.size(); i++)
-    {
-        for(int j=0; j<storedMasks.size(); j++)
-        {
-            if(i == j)
-                ; //Do nothing
-            else if(!storedMasks[i].intersect(storedMasks[j]).isEmpty())
-            {
+    for (int i=0; i<storedMasks.size(); i++) {
+        for(int j=0; j<storedMasks.size(); j++) {
+            if(i == j) {
+                //Do nothing
+            }
+            else if(!storedMasks[i].intersect(storedMasks[j]).isEmpty()) {
                 storedMasks[i] = storedMasks[i].united(storedMasks[j]);
                 storedMasks.erase(storedMasks.begin() + j);
             }
@@ -167,14 +150,11 @@ void WebWindow::exitClippingMode() {
     }
 
     //Create each mask
-    for(int i=0; i<storedMasks.size(); i++)
-    {
-        if(i==0)
-        {
+    for(int i=0; i<storedMasks.size(); i++) {
+        if(i==0) {
             setClip(storedMasks[0]);
         }
-        else
-        {
+        else {
             WebWindow *w = new WebWindow(wwparent, cookieJar, ui.WebView->url().toString());
             w->show();
             w->storeMask(storedMasks[i]);
@@ -187,22 +167,17 @@ void WebWindow::exitClippingMode() {
 
     //Make sure every new clip has a pointer to all the
     // other clips that were created from the same page.
-    for(int i=0; i<sharedClips.size(); i++)
-    {
+    for(int i=0; i<sharedClips.size(); i++) {
         sharedClips[i]->sharedClips.push_back(this);
-
-        for(int j=0; j<sharedClips.size(); j++)
-        {
-            if(i != j)
-            {
+        for(int j=0; j<sharedClips.size(); j++) {
+            if(i != j) {
                 sharedClips[i]->sharedClips.push_back(sharedClips[j]);
             }
         }
     }
 }
 
-void WebWindow::setClip(QRegion region)
-{
+void WebWindow::setClip(QRegion region) {
     clipped = true;
     ui.NavigationBox->setHidden(true);
 
@@ -211,12 +186,11 @@ void WebWindow::setClip(QRegion region)
     geometrySet = true;
 
     ui.WebView->setGeometry(-region.boundingRect().left(), -region.boundingRect().top(), ui.WebView->width(), ui.WebView->height());
-    this->setGeometry(mainGeometry.left(), mainGeometry.top(), region.boundingRect().width(), region.boundingRect().height() + 20);
+    this->setGeometry(mainGeometry.left(), mainGeometry.top(), region.boundingRect().width(), region.boundingRect().height() + 40);
     QRegion newRegion;
     //region.boundingRect().setTopLeft(QPoint(0, 0));
     QPoint p = region.boundingRect().topLeft();
-    for(int i=0; i<region.rects().size(); i++)
-    {
+    for(int i=0; i<region.rects().size(); i++) {
         QRect rect = region.rects()[i];
         rect.moveTopLeft(rect.topLeft() - p);
         rect.setHeight(rect.height() + 20);
@@ -227,34 +201,43 @@ void WebWindow::setClip(QRegion region)
     ui.ClickArea->setDisabled(true);
     ui.ClickArea->lower();
     ui.ClickArea->update();
- }
+
+    ui.WebView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+}
 
 // Button Functionality
-void WebWindow::forward(){
+void WebWindow::forward() {
     //go forward in currentWindow
     if (ui.WebView->history()->canGoForward()) {
         ui.WebView->history()->forward();
     }
 }
 
-void WebWindow::back(){
+void WebWindow::back() {
     //go backwards in currentWindow
     if (ui.WebView->history()->canGoBack()) {
         ui.WebView->history()->back();
     }
 }
 
-void WebWindow::navigate( QString url ){
+void WebWindow::navigate( QUrl url ) {
     //navigate to url
     //code injections possible?
-    if (!url.startsWith("http://", Qt::CaseInsensitive)) {
-        url = "http://" + url;
-        ui.addressBar->setText(url);
-    }
-    ui.WebView->setUrl(QUrl(url));
+    //if (!url.startsWith("http", Qt::CaseInsensitive)) {
+    //    url = "http://" + url;
+    ui.addressBar->setText(url.toString());
+    //}
+    ui.WebView->setUrl(url);
 }
 
-void WebWindow::restoreClip(){
+void WebWindow::navigate( QString url ) {
+    if (!url.contains("://", Qt::CaseInsensitive)) {
+        url = "http://" + url;
+    }
+    navigate(QUrl(url));
+}
+
+void WebWindow::restoreClip() {
     removeMask();
     ui.WebView->setGeometry(windowGeometry);
     this->setGeometry(mainGeometry);
@@ -264,16 +247,15 @@ void WebWindow::restoreClip(){
 
     //Tell other clips that this one has been restored
     destroySharedClips();
+
+    //Tell the page to start capturing link clicks again
+    ui.WebView->page()->setLinkDelegationPolicy(QWebPage::DontDelegateLinks);
 }
 
-void WebWindow::destroySharedClips()
-{
-    for(int i=0; i<sharedClips.size(); i++)
-    {
-        for(int j=0; j<sharedClips[i]->sharedClips.size(); j++)
-        {
-            if(sharedClips[i]->sharedClips[j] == this)
-            {
+void WebWindow::destroySharedClips() {
+    for(int i=0; i<sharedClips.size(); i++) {
+        for(int j=0; j<sharedClips[i]->sharedClips.size(); j++) {
+            if(sharedClips[i]->sharedClips[j] == this) {
                 sharedClips[i]->sharedClips.erase(sharedClips[i]->sharedClips.begin() + j);
                 break;
             }

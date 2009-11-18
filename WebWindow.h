@@ -51,7 +51,8 @@ private slots:
 	void go();
 
 	//opens a new top level window which contains a browser
-        void newWindow();
+        void newWindow(const QString & url = "about:blank");
+        void newWindow(const QUrl & url);
 
 	//enters the clipping mode
         void startClippingMode();
@@ -79,6 +80,7 @@ private:
         void resizeAddressBox();
 
         //navigate the WebWindow's page to url
+        void navigate( QUrl url );
         void navigate( QString url );
 
         //this sets up the connection

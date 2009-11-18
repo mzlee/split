@@ -37,6 +37,7 @@ void WebWindow::setupConnections(){
     connect( ui.reloadButton, SIGNAL(clicked()), this, SLOT(go()) );
     connect( ui.stopButton, SIGNAL(clicked()), ui.WebView, SLOT(stop()) );
 
+	connect( ui.addressBar, SIGNAL(returnPressed()), this, SLOT(go()) );
     connect( ui.WebView, SIGNAL(loadFinished(bool)), this, SLOT(setWebKitState()) );
     //connect( ui.WebView, SIGNAL(linkClicked(QUrl)), this, SLOT(newWindow(const QUrl &)) );
     connect( ui.WebView, SIGNAL(statusBarMessage(const QString &)), this, SLOT(updateStatus(const QString &)));

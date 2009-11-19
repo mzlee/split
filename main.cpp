@@ -13,19 +13,20 @@
 #include <QNetworkCookieJar>
 #include "WebWindow.h"
 
-int main( int argc, char **argv ){
-	
-    //initialize the resources
+int main( int argc, char **argv )
+{
+    // Initialize our resources
     Q_INIT_RESOURCE(Resources);
-    //make an application
-    QApplication app( argc, argv );
-    //app.setQuitOnLastWindowClosed(false);
-    QWidget *parent = new QWidget();
-    QNetworkCookieJar* cookieJar = new QNetworkCookieJar(parent);
-    //make and show the main window
+
+    // Initialize the application
+    QApplication SplitApp(argc, argv);
+    QWidget *parent = 0;    // XXX THIS THING SUCKS. IF YOU DON'T SET *parent TO NULL,
+                            // THE APP WILL CLOSE IF JUST ONE WINDOW CLOSES.
+                            // SOMEONE == FAIL. -jb
+    QNetworkCookieJar *cookieJar = new QNetworkCookieJar(parent);
     WebWindow ww(parent, cookieJar, "http://google.com");
     ww.show();
-    //qt requires this
-    return app.exec();
 
+    // Run message loop
+    return SplitApp.exec();
 }

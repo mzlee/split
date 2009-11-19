@@ -35,6 +35,9 @@ protected:
 
 private slots:
 
+		//used by hotkeys
+		void selectAddrBar();
+
         //this creates the basic mask
         void createMask(QRegion region);
 

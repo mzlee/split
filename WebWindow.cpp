@@ -38,6 +38,7 @@ void WebWindow::setupShortcuts(){
 		new window				ctrl + n
 		go						ctrl + g
 		press clip button		ctrl + m
+		select address bar		ctrl + l
 	*/
 
 	//new window
@@ -51,8 +52,18 @@ void WebWindow::setupShortcuts(){
 	//clipping mode && restore
 	qsc = new QShortcut(QKeySequence("Ctrl+m"),this);
 	connect( qsc, SIGNAL(activated()), ui.clippingModeButton, SLOT(click()) );
+	
+	//select address bar
+	qsc = new QShortcut(QKeySequence("Ctrl+l"),this);
+	connect( qsc, SIGNAL(activated()), this, SLOT(selectAddrBar()) );
 
 	
+}
+
+void WebWindow::selectAddrBar(){
+	//get the keyboard focus and select all the text
+	ui.addressBar->setFocus(Qt::OtherFocusReason);
+	ui.addressBar->selectAll();
 }
 
 void WebWindow::setupConnections(){

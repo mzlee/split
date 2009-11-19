@@ -7,8 +7,11 @@
 #include <QWebFrame>
 #include <QWebHistory>
 #include <QIcon>
+#include <QKeySequence>
+#include <QShortcut>
 
-WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUrl ) : QMainWindow( parent ) {
+WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUrl ) : QMainWindow( parent ){
+
     wwparent = parent;
 
     //show the window
@@ -20,6 +23,7 @@ WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUr
     ui.ClickArea->setHidden(true);
 
     setupConnections();
+	setupShortcuts();
 
     //setup state machine
     setupState();
@@ -29,6 +33,27 @@ WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUr
     navigate(defaultUrl);
 }
 
+void WebWindow::setupShortcuts(){
+	/* 
+		new window				ctrl + n
+		go						ctrl + g
+		press clip button		ctrl + m
+	*/
+
+	//new window
+	QShortcut* qsc = new QShortcut(QKeySequence("Ctrl+n"),this);
+	connect( qsc, SIGNAL(activated()), this, SLOT(newWindow()) );
+
+	//go
+	qsc = new QShortcut(QKeySequence("Ctrl+g"),this);
+	connect( qsc, SIGNAL(activated()), this, SLOT(go()) );
+	
+	//clipping mode && restore
+	qsc = new QShortcut(QKeySequence("Ctrl+m"),this);
+	connect( qsc, SIGNAL(activated()), ui.clippingModeButton, SLOT(click()) );
+
+	
+}
 
 void WebWindow::setupConnections(){
     //connect the click() action of each button to a function
@@ -37,6 +62,7 @@ void WebWindow::setupConnections(){
     connect( ui.reloadButton, SIGNAL(clicked()), this, SLOT(go()) );
     connect( ui.stopButton, SIGNAL(clicked()), ui.WebView, SLOT(stop()) );
 
+	connect( ui.addressBar, SIGNAL(returnPressed()), this, SLOT(go()) );
     connect( ui.WebView, SIGNAL(loadFinished(bool)), this, SLOT(setWebKitState()) );
     connect( ui.WebView, SIGNAL(linkClicked(QUrl)), this, SLOT(newWindow(const QUrl &)) );
     connect( ui.WebView, SIGNAL(statusBarMessage(const QString &)), this, SLOT(updateStatus(const QString &)));

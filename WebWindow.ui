@@ -214,7 +214,7 @@
      <x>0</x>
      <y>0</y>
      <width>675</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -276,9 +276,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebPage</class>
-   <extends>QObject</extends>
-   <header>QtWebKit/QWebPage</header>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKit/QWebView</header>
   </customwidget>
   <customwidget>
    <class>MouseCaptureWidget</class>
@@ -288,13 +288,13 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>addressBar</tabstop>
   <tabstop>reloadButton</tabstop>
   <tabstop>stopButton</tabstop>
   <tabstop>clippingModeButton</tabstop>
-  <tabstop>WebView</tabstop>
-  <tabstop>addressBar</tabstop>
   <tabstop>backButton</tabstop>
   <tabstop>forwardButton</tabstop>
+  <tabstop>WebView</tabstop>
  </tabstops>
  <resources>
   <include location="Resources.qrc"/>

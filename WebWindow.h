@@ -77,6 +77,8 @@ private slots:
 
 private:
 
+		void setupShortcuts();
+
         void resizeAddressBox();
 
         //navigate the WebWindow's page to url

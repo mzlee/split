@@ -19,9 +19,11 @@
 #include <QIcon>
 #include <QKeySequence>
 #include <QShortcut>
+#include <QStateMachine>
 
-WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUrl ) : QMainWindow( parent ){
-
+WebWindow::WebWindow(QWidget *parent, QNetworkCookieJar *jar, QString defaultUrl)
+    : QMainWindow(parent)
+{
     wwparent = parent;
 
     //show the window
@@ -43,7 +45,8 @@ WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUr
     navigate(defaultUrl);
 }
 
-void WebWindow::setupShortcuts(){
+void WebWindow::setupShortcuts()
+{
 	/* 
 		new window				ctrl + n
 		go						ctrl + g
@@ -67,16 +70,19 @@ void WebWindow::setupShortcuts(){
 	qsc = new QShortcut(QKeySequence("Ctrl+l"),this);
 	connect( qsc, SIGNAL(activated()), this, SLOT(selectAddrBar()) );
 
-	
+    return;
 }
 
-void WebWindow::selectAddrBar(){
+void WebWindow::selectAddrBar()
+{
 	//get the keyboard focus and select all the text
 	ui.addressBar->setFocus(Qt::OtherFocusReason);
 	ui.addressBar->selectAll();
+    return;
 }
 
-void WebWindow::setupConnections(){
+void WebWindow::setupConnections()
+{
     //connect the click() action of each button to a function
     connect( ui.backButton, SIGNAL(clicked()), this, SLOT(back()) );
     connect( ui.forwardButton, SIGNAL(clicked()), this, SLOT(forward()) );
@@ -96,9 +102,12 @@ void WebWindow::setupConnections(){
     connect( ui.actionBack, SIGNAL(triggered()), ui.WebView, SLOT(stop()) );
 
     connect( ui.ClickArea, SIGNAL(mcEndCapture(QRegion)), this, SLOT(storeMask(QRegion)) );
+
+    return;
 }
 
-void WebWindow::setupState(){
+void WebWindow::setupState()
+{
     // Sets up the state machine
     QState *normalMode = new QState();
     QState *clippingMode = new QState();
@@ -114,14 +123,18 @@ void WebWindow::setupState(){
     connect( clippingMode, SIGNAL(entered()), this, SLOT(startClippingMode()) );
     connect( clippingMode, SIGNAL(exited()), this, SLOT(exitClippingMode()) );
     machine.start();
+    return;
 }
 
-void WebWindow::updateStatus(const QString &message) {
+void WebWindow::updateStatus(const QString &message)
+{
     ui.statusBar->showMessage(message);
+    return;
 }
 
 //if the window starts stretching infinitely... look here
-void WebWindow::resizeEvent(QResizeEvent * e) {
+void WebWindow::resizeEvent(QResizeEvent * e)
+{
     if (!clipped) {
         ui.WebView->setFixedSize(e->size().width(), e->size().height() - 54);
         ui.ClickArea->setGeometry(ui.WebView->x(),ui.WebView->y(),ui.WebView->width(),ui.WebView->height());
@@ -129,45 +142,61 @@ void WebWindow::resizeEvent(QResizeEvent * e) {
         resizeAddressBox();
         geometrySet = false;
     }
+    return;
 }
 
-void WebWindow::resizeAddressBox() {
+void WebWindow::resizeAddressBox()
+{
     ui.clippingModeButton->setGeometry(ui.NavigationBox->size().width() - 33, 0, 32, 32);
     ui.stopButton->setGeometry(ui.NavigationBox->size().width() - 64, 0, 32, 32);
     ui.reloadButton->setGeometry(ui.NavigationBox->size().width() - 95, 0 , 32, 32);
     ui.addressBar->setGeometry(68, 3, ui.NavigationBox->size().width() - 168, 28);
+    return;
 }
 
-void WebWindow::createMask(QRegion region) {
+void WebWindow::createMask(QRegion region)
+{
    setMask(region);
    ui.WebView->blockSignals(true);
+   return;
 }
 
-void WebWindow::storeMask(QRegion region) {
+void WebWindow::storeMask(QRegion region)
+{
     storedMasks.push_back(region);
+    return;
 }
 
 
-void WebWindow::removeMask() {
+void WebWindow::removeMask()
+{
    clearMask();
    ui.WebView->blockSignals(false);
+   return;
 }
 
-void WebWindow::go() {
+void WebWindow::go()
+{
     navigate(ui.addressBar->text());
+    return;
 }
 
-void WebWindow::newWindow(const QUrl & url) {
+void WebWindow::newWindow(const QUrl &url)
+{
     newWindow(url.toString());
+    return;
 }
 
-void WebWindow::newWindow(const QString & url) {
+void WebWindow::newWindow(const QString &url)
+{
     WebWindow *w = new WebWindow(wwparent, cookieJar, url);
     w->show();
     w->setFocus();
+    return;
 }
 
-void WebWindow::startClippingMode() {
+void WebWindow::startClippingMode()
+{
     //enter clipping mode
     if (geometrySet) {
         restoreClip();
@@ -179,10 +208,13 @@ void WebWindow::startClippingMode() {
 
     storedMasks.clear();
     sharedClips.clear();
+
+    return;
 }
 
 
-void WebWindow::exitClippingMode() {
+void WebWindow::exitClippingMode()
+{
     //Combine masks that intersect
     for (int i=0; i<storedMasks.size(); i++) {
         for(int j=0; j<storedMasks.size(); j++) {
@@ -222,9 +254,11 @@ void WebWindow::exitClippingMode() {
             }
         }
     }
+    return;
 }
 
-void WebWindow::setClip(QRegion region) {
+void WebWindow::setClip(QRegion region)
+{
     clipped = true;
     ui.NavigationBox->setHidden(true);
 
@@ -250,24 +284,30 @@ void WebWindow::setClip(QRegion region) {
     ui.ClickArea->update();
 
     ui.WebView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    return;
 }
 
 // Button Functionality
-void WebWindow::forward() {
+void WebWindow::forward()
+{
     //go forward in currentWindow
     if (ui.WebView->history()->canGoForward()) {
         ui.WebView->history()->forward();
     }
+    return;
 }
 
-void WebWindow::back() {
+void WebWindow::back()
+{
     //go backwards in currentWindow
     if (ui.WebView->history()->canGoBack()) {
         ui.WebView->history()->back();
     }
+    return;
 }
 
-void WebWindow::navigate( QUrl url ) {
+void WebWindow::navigate(QUrl url)
+{
     //navigate to url
     //code injections possible?
     //if (!url.startsWith("http", Qt::CaseInsensitive)) {
@@ -275,16 +315,20 @@ void WebWindow::navigate( QUrl url ) {
     ui.addressBar->setText(url.toString());
     //}
     ui.WebView->setUrl(url);
+    return;
 }
 
-void WebWindow::navigate( QString url ) {
+void WebWindow::navigate(QString url)
+{
     if (!url.contains("://", Qt::CaseInsensitive)) {
         url = "http://" + url;
     }
     navigate(QUrl(url));
+    return;
 }
 
-void WebWindow::restoreClip() {
+void WebWindow::restoreClip()
+{
     removeMask();
     ui.WebView->setGeometry(windowGeometry);
     this->setGeometry(mainGeometry);
@@ -297,9 +341,12 @@ void WebWindow::restoreClip() {
 
     //Tell the page to start capturing link clicks again
     ui.WebView->page()->setLinkDelegationPolicy(QWebPage::DontDelegateLinks);
+
+    return;
 }
 
-void WebWindow::destroySharedClips() {
+void WebWindow::destroySharedClips()
+{
     for(int i=0; i<sharedClips.size(); i++) {
         for(int j=0; j<sharedClips[i]->sharedClips.size(); j++) {
             if(sharedClips[i]->sharedClips[j] == this) {
@@ -308,9 +355,11 @@ void WebWindow::destroySharedClips() {
             }
         }
     }
+    return;
 }
 
-void WebWindow::setWebKitState() {
+void WebWindow::setWebKitState()
+{
     if (ui.WebView->history()->canGoBack()) {
         ui.backButton->setEnabled(true);
         ui.backButton->setIcon(QIcon(":/icons/back"));
@@ -327,4 +376,5 @@ void WebWindow::setWebKitState() {
     }
     ui.addressBar->setText(ui.WebView->url().toString());
     this->setWindowTitle("Split -- " + ui.WebView->title());
+    return;
 }

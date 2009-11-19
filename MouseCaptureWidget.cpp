@@ -9,6 +9,9 @@
 //////////////////////////////////////////////////
 
 #include "MouseCaptureWidget.h"
+#include <QWidget>
+#include <QPainter>
+#include <QMouseEvent>
 
 MouseCaptureWidget::MouseCaptureWidget(QWidget* parent) : QWidget(parent) {
         startPoint = QPoint();

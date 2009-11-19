@@ -1,3 +1,13 @@
+//////////////////////////////////////////////////
+//                                              //
+// MouseCaptureWidget.cpp                       //
+//   -> part of Split                           //
+//                                              //
+// Copyright (c) 2009 Jim Brusstar, Michael Lee //
+//                 Ben Montgomery, Robert Steen //
+//                                              //
+//////////////////////////////////////////////////
+
 #include "MouseCaptureWidget.h"
 
 MouseCaptureWidget::MouseCaptureWidget(QWidget* parent) : QWidget(parent) {

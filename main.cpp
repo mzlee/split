@@ -1,3 +1,13 @@
+//////////////////////////////////////////////////
+//                                              //
+// main.cpp                                     //
+//   -> part of Split                           //
+//                                              //
+// Copyright (c) 2009 Jim Brusstar, Michael Lee //
+//                 Ben Montgomery, Robert Steen //
+//                                              //
+//////////////////////////////////////////////////
+
 #include <QApplication>
 #include <QObject>
 #include <QNetworkCookieJar>

@@ -1,5 +1,16 @@
+//////////////////////////////////////////////////
+//                                              //
+// MouseCaptureWidget.h                         //
+//   -> part of Split                           //
+//                                              //
+// Copyright (c) 2009 Jim Brusstar, Michael Lee //
+//                 Ben Montgomery, Robert Steen //
+//                                              //
+//////////////////////////////////////////////////
+
 #ifndef MOUSECAPTUREWIDGET_H
 #define MOUSECAPTUREWIDGET_H
+
 #include <QWidget>
 #include <QRegion>
 #include <QPolygon>

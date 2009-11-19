@@ -1,5 +1,16 @@
+//////////////////////////////////////////////////
+//                                              //
+// WebWindow.h                                  //
+//   -> part of Split                           //
+//                                              //
+// Copyright (c) 2009 Jim Brusstar, Michael Lee //
+//                 Ben Montgomery, Robert Steen //
+//                                              //
+//////////////////////////////////////////////////
+
 #ifndef WEBWINDOW_H
 #define WEBWINDOW_H
+
 #include "ui_WebWindow.h"
 #include <QString>
 #include <QWidget>

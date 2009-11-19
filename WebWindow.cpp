@@ -1,3 +1,13 @@
+//////////////////////////////////////////////////
+//                                              //
+// WebWindow.cpp                                //
+//   -> part of Split                           //
+//                                              //
+// Copyright (c) 2009 Jim Brusstar, Michael Lee //
+//                 Ben Montgomery, Robert Steen //
+//                                              //
+//////////////////////////////////////////////////
+
 #include "WebWindow.h"
 #include <QEvent>
 #include <QGraphicsWidget>

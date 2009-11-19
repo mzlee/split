@@ -7,6 +7,8 @@
 #include <QWebFrame>
 #include <QWebHistory>
 #include <QIcon>
+#include <QKeySequence>
+#include <QShortcut>
 
 WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUrl ) : QMainWindow( parent ){
 
@@ -21,6 +23,7 @@ WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUr
     ui.ClickArea->setHidden(true);
 
     setupConnections();
+	setupShortcuts();
 
     //setup state machine
     setupState();
@@ -28,6 +31,28 @@ WebWindow::WebWindow( QWidget *parent, QNetworkCookieJar *jar, QString defaultUr
     clipped = false;
     geometrySet = false;
     navigate(defaultUrl);
+}
+
+void WebWindow::setupShortcuts(){
+	/* 
+		new window				ctrl + n
+		go						ctrl + g
+		press clip button		ctrl + m
+	*/
+
+	//new window
+	QShortcut* qsc = new QShortcut(QKeySequence("Ctrl+n"),this);
+	connect( qsc, SIGNAL(activated()), this, SLOT(newWindow()) );
+
+	//go
+	qsc = new QShortcut(QKeySequence("Ctrl+g"),this);
+	connect( qsc, SIGNAL(activated()), this, SLOT(go()) );
+	
+	//clipping mode && restore
+	qsc = new QShortcut(QKeySequence("Ctrl+m"),this);
+	connect( qsc, SIGNAL(activated()), ui.clippingModeButton, SLOT(click()) );
+
+	
 }
 
 void WebWindow::setupConnections(){

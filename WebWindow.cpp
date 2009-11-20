@@ -21,59 +21,42 @@
 #include <QShortcut>
 #include <QStateMachine>
 
-WebWindow::WebWindow(QWidget *parent, QNetworkCookieJar *jar, QString defaultUrl)
-    : QMainWindow(parent)
+WebWindow::WebWindow(QNetworkCookieJar *argCookieJar, QString defaultUrl)
 {
-    wwparent = parent;
+    // Set the cookie jar
+    _cookieJar = argCookieJar;
+    _ui.WebView->page()->networkAccessManager()->setCookieJar(_cookieJar);
 
-    //show the window
-    ui.setupUi( this );
-    cookieJar = jar;
-    ui.WebView->page()->networkAccessManager()->setCookieJar(jar);
-
-    ui.ClickArea->lower();
-    ui.ClickArea->setHidden(true);
-
-    setupConnections();
-	setupShortcuts();
-
-    //setup state machine
-    setupState();
-
-    clipped = false;
-    geometrySet = false;
-    navigate(defaultUrl);
+    // Setup the window
+    _ui.setupUi(this);              // Build form UI
+    _ui.ClickArea->setHidden(true); // Hide the clipping field
+    _setupConnections();            // Connect signals/slots
+    _setupShortcuts();              // Init keyboard shortcuts
+    _setupState();                  // Init the state machine
+    _clipped = false;
+    _geometrySet = false;
+    _navigate(defaultUrl);
 }
 
-void WebWindow::setupShortcuts()
+void WebWindow::_setupShortcuts()
 {
-	/* 
-		new window				ctrl + n
-		go						ctrl + g
-		press clip button		ctrl + m
-		select address bar		ctrl + l
-	*/
-
-	//new window
-	QShortcut* qsc = new QShortcut(QKeySequence("Ctrl+n"),this);
+    // Init keyboard shortcuts
+    //      new window			ctrl + n
+    //      go					ctrl + g
+    //      press clip button	ctrl + m
+    //      select address bar	ctrl + l
+    QShortcut* qsc = new QShortcut(QKeySequence("Ctrl+n"),this);    // new window
 	connect( qsc, SIGNAL(activated()), this, SLOT(newWindow()) );
-
-	//go
-	qsc = new QShortcut(QKeySequence("Ctrl+g"),this);
+    qsc = new QShortcut(QKeySequence("Ctrl+g"),this);               // go
 	connect( qsc, SIGNAL(activated()), this, SLOT(go()) );
-	
-	//clipping mode && restore
-	qsc = new QShortcut(QKeySequence("Ctrl+m"),this);
+    qsc = new QShortcut(QKeySequence("Ctrl+m"),this);               // clip/no-clip
 	connect( qsc, SIGNAL(activated()), ui.clippingModeButton, SLOT(click()) );
-	
-	//select address bar
-	qsc = new QShortcut(QKeySequence("Ctrl+l"),this);
+    qsc = new QShortcut(QKeySequence("Ctrl+l"),this);               // set url bar
 	connect( qsc, SIGNAL(activated()), this, SLOT(selectAddrBar()) );
-
     return;
 }
 
-void WebWindow::selectAddrBar()
+void WebWindow::_selectAddrBar()
 {
 	//get the keyboard focus and select all the text
 	ui.addressBar->setFocus(Qt::OtherFocusReason);
@@ -81,7 +64,7 @@ void WebWindow::selectAddrBar()
     return;
 }
 
-void WebWindow::setupConnections()
+void WebWindow::_setupConnections()
 {
     //connect the click() action of each button to a function
     connect( ui.backButton, SIGNAL(clicked()), this, SLOT(back()) );
@@ -106,7 +89,7 @@ void WebWindow::setupConnections()
     return;
 }
 
-void WebWindow::setupState()
+void WebWindow::_setupState()
 {
     // Sets up the state machine
     QState *normalMode = new QState();
@@ -126,15 +109,15 @@ void WebWindow::setupState()
     return;
 }
 
-void WebWindow::updateStatus(const QString &message)
+void WebWindow::_updateStatus(const QString &message)
 {
     ui.statusBar->showMessage(message);
     return;
 }
 
-//if the window starts stretching infinitely... look here
-void WebWindow::resizeEvent(QResizeEvent * e)
+void WebWindow::resizeEvent(QResizeEvent *e)
 {
+    //if the window starts stretching infinitely... look here
     if (!clipped) {
         ui.WebView->setFixedSize(e->size().width(), e->size().height() - 54);
         ui.ClickArea->setGeometry(ui.WebView->x(),ui.WebView->y(),ui.WebView->width(),ui.WebView->height());
@@ -145,7 +128,7 @@ void WebWindow::resizeEvent(QResizeEvent * e)
     return;
 }
 
-void WebWindow::resizeAddressBox()
+void WebWindow::_resizeAddressBox()
 {
     ui.clippingModeButton->setGeometry(ui.NavigationBox->size().width() - 33, 0, 32, 32);
     ui.stopButton->setGeometry(ui.NavigationBox->size().width() - 64, 0, 32, 32);
@@ -154,66 +137,64 @@ void WebWindow::resizeAddressBox()
     return;
 }
 
-void WebWindow::createMask(QRegion region)
+void WebWindow::_createMask(QRegion region)
 {
    setMask(region);
    ui.WebView->blockSignals(true);
    return;
 }
 
-void WebWindow::storeMask(QRegion region)
+void WebWindow::_storeMask(QRegion region)
 {
     storedMasks.push_back(region);
     return;
 }
 
-
-void WebWindow::removeMask()
+void WebWindow::_removeMask()
 {
    clearMask();
    ui.WebView->blockSignals(false);
    return;
 }
 
-void WebWindow::go()
+void WebWindow::_go()
 {
     navigate(ui.addressBar->text());
     return;
 }
 
-void WebWindow::newWindow(const QUrl &url)
+void WebWindow::_newWindow(const QUrl &url)
 {
     newWindow(url.toString());
     return;
 }
 
-void WebWindow::newWindow(const QString &url)
+void WebWindow::_newWindow(const QString &url)
 {
-    WebWindow *w = new WebWindow(wwparent, cookieJar, url);
+    WebWindow *w = new WebWindow(_cookieJar, url);
     w->show();
     w->setFocus();
     return;
 }
 
-void WebWindow::startClippingMode()
+void WebWindow::_startClippingMode()
 {
-    //enter clipping mode
-    if (geometrySet) {
-        restoreClip();
+    // Enter clipping mode
+    if (_geometrySet)
+    {
+        _restoreClip();
     }
-    ui.ClickArea->update();
-    ui.ClickArea->setEnabled(true);
-    ui.ClickArea->raise();
-    ui.ClickArea->show();
-
-    storedMasks.clear();
-    sharedClips.clear();
-
+    _ui.ClickArea->update();
+    _ui.ClickArea->setEnabled(true);
+    _ui.ClickArea->raise();
+    _ui.ClickArea->show();
+    _storedMasks.clear();
+    _sharedClips.clear();
     return;
 }
 
 
-void WebWindow::exitClippingMode()
+void WebWindow::_exitClippingMode()
 {
     //Combine masks that intersect
     for (int i=0; i<storedMasks.size(); i++) {
@@ -257,7 +238,7 @@ void WebWindow::exitClippingMode()
     return;
 }
 
-void WebWindow::setClip(QRegion region)
+void WebWindow::_setClip(QRegion region)
 {
     clipped = true;
     ui.NavigationBox->setHidden(true);
@@ -287,26 +268,28 @@ void WebWindow::setClip(QRegion region)
     return;
 }
 
-// Button Functionality
-void WebWindow::forward()
+void WebWindow::_forward()
 {
-    //go forward in currentWindow
-    if (ui.WebView->history()->canGoForward()) {
+    // Button Functionality
+    if (ui.WebView->history()->canGoForward())
+    {
+        //go forward in currentWindow
         ui.WebView->history()->forward();
     }
     return;
 }
 
-void WebWindow::back()
+void WebWindow::_back()
 {
     //go backwards in currentWindow
-    if (ui.WebView->history()->canGoBack()) {
+    if (ui.WebView->history()->canGoBack())
+    {
         ui.WebView->history()->back();
     }
     return;
 }
 
-void WebWindow::navigate(QUrl url)
+void WebWindow::_navigate(QUrl url)
 {
     //navigate to url
     //code injections possible?
@@ -318,7 +301,7 @@ void WebWindow::navigate(QUrl url)
     return;
 }
 
-void WebWindow::navigate(QString url)
+void WebWindow::_navigate(QString url)
 {
     if (!url.contains("://", Qt::CaseInsensitive)) {
         url = "http://" + url;
@@ -327,7 +310,7 @@ void WebWindow::navigate(QString url)
     return;
 }
 
-void WebWindow::restoreClip()
+void WebWindow::_restoreClip()
 {
     removeMask();
     ui.WebView->setGeometry(windowGeometry);
@@ -335,17 +318,14 @@ void WebWindow::restoreClip()
     ui.NavigationBox->setVisible(true);
     clipped = false;
     update();
-
     //Tell other clips that this one has been restored
     destroySharedClips();
-
     //Tell the page to start capturing link clicks again
     ui.WebView->page()->setLinkDelegationPolicy(QWebPage::DontDelegateLinks);
-
     return;
 }
 
-void WebWindow::destroySharedClips()
+void WebWindow::_destroySharedClips()
 {
     for(int i=0; i<sharedClips.size(); i++) {
         for(int j=0; j<sharedClips[i]->sharedClips.size(); j++) {
@@ -358,7 +338,7 @@ void WebWindow::destroySharedClips()
     return;
 }
 
-void WebWindow::setWebKitState()
+void WebWindow::_setWebKitState()
 {
     if (ui.WebView->history()->canGoBack()) {
         ui.backButton->setEnabled(true);

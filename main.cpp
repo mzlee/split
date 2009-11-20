@@ -13,7 +13,7 @@
 #include <QNetworkCookieJar>
 #include "WebWindow.h"
 
-int main( int argc, char **argv )
+int main(int argc, char **argv)
 {
     // Initialize our resources
     Q_INIT_RESOURCE(Resources);

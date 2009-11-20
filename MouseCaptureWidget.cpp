@@ -13,14 +13,17 @@
 #include <QPainter>
 #include <QMouseEvent>
 
-MouseCaptureWidget::MouseCaptureWidget(QWidget* parent) : QWidget(parent) {
-        startPoint = QPoint();
-        endPoint = QPoint(size().width(), size().height());
-        penWidth = 1;
-        update();
+MouseCaptureWidget::MouseCaptureWidget(QWidget *parent)
+    : QWidget(parent)
+{
+    startPoint = QPoint();
+    endPoint = QPoint(size().width(), size().height());
+    penWidth = 1;
+    update();
 }
 
-QRegion MouseCaptureWidget::getCapturedRegion() {
+QRegion MouseCaptureWidget::getCapturedRegion()
+{
     int l = startPoint.x() < endPoint.x() ? startPoint.x() : endPoint.x();
     int t = startPoint.y() < endPoint.y() ? startPoint.y() : endPoint.y();
     int w = startPoint.x() > endPoint.x() ? startPoint.x() - l : endPoint.x() - l;
@@ -28,7 +31,8 @@ QRegion MouseCaptureWidget::getCapturedRegion() {
     return QRegion(QRect(l, t, w, h), QRegion::Rectangle);
 }
 
-void MouseCaptureWidget::paintEvent(QPaintEvent * ) {
+void MouseCaptureWidget::paintEvent(QPaintEvent *)
+{
     QPainter painter(this);
     setupPainter(painter);
 
@@ -39,21 +43,28 @@ void MouseCaptureWidget::paintEvent(QPaintEvent * ) {
     painter.drawLine(startPoint.x(), startPoint.y() - yFlair, startPoint.x(), endPoint.y() + yFlair);
     painter.drawLine(startPoint.x() - xFlair, endPoint.y(), endPoint.x() + xFlair, endPoint.y());
     painter.drawLine(endPoint.x(), startPoint.y() - yFlair, endPoint.x(), endPoint.y() + yFlair);
+
+    return;
 }
 
-void MouseCaptureWidget::mousePressEvent(QMouseEvent * event ) {
+void MouseCaptureWidget::mousePressEvent(QMouseEvent *event)
+{
     if (event->button() == Qt::LeftButton) {
         startPoint = event->pos();
         emit(mcStartCapture(this));
     }
+    return;
 }
 
-void MouseCaptureWidget::mouseMoveEvent(QMouseEvent * event ) {
+void MouseCaptureWidget::mouseMoveEvent(QMouseEvent *event)
+{
     endPoint = event->pos();
     update();
+    return;
 }
 
-void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent * event ) {
+void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent *event)
+{
     endPoint = event->pos();
     if((startPoint - endPoint).manhattanLength() > 5)
     {
@@ -61,7 +72,7 @@ void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent * event ) {
         return;
     }
 
-    for(int i=0; i<polygon.size(); i++)
+    for(int i = 0; i < polygon.size(); i++)
     {
         if((startPoint - polygon[i]).manhattanLength() < 20)
         {
@@ -70,10 +81,13 @@ void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent * event ) {
         }
     }
     polygon << startPoint;
+    return;
 }
 
 //setup the painter brush
-void MouseCaptureWidget::setupPainter(QPainter & painter) {
+void MouseCaptureWidget::setupPainter(QPainter &painter)
+{
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QPen(Qt::black, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    return;
  }

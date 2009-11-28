@@ -26,18 +26,17 @@ signals:
     void mcEndCapture(QRegion);
 
 protected:
-    void paintEvent(QPaintEvent *);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
+    void _paintEvent(QPaintEvent *);
+    void _mouseMoveEvent(QMouseEvent *event);
+    void _mousePressEvent(QMouseEvent *event);
+    void _mouseReleaseEvent(QMouseEvent *event);
 
 private:
-    void setupPainter(QPainter& painter);
+    void _setupPainter(QPainter& painter);
 
-    int penWidth;
-    QPoint startPoint;
-    QPoint endPoint;
-    QPolygon polygon;
+    int _penWidth;
+    QPoint _startPoint, _endPoint;
+    QPolygon _polygon;
 };
 
 #endif // MOUSECAPTUREWIDGET_H

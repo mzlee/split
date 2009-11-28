@@ -16,78 +16,84 @@
 MouseCaptureWidget::MouseCaptureWidget(QWidget *parent)
     : QWidget(parent)
 {
-    startPoint = QPoint();
-    endPoint = QPoint(size().width(), size().height());
-    penWidth = 1;
+    _startPoint = QPoint();
+    _endPoint = QPoint(size().width(), size().height());
+    _penWidth = 1;
     update();
 }
 
 QRegion MouseCaptureWidget::getCapturedRegion()
 {
-    int l = startPoint.x() < endPoint.x() ? startPoint.x() : endPoint.x();
-    int t = startPoint.y() < endPoint.y() ? startPoint.y() : endPoint.y();
-    int w = startPoint.x() > endPoint.x() ? startPoint.x() - l : endPoint.x() - l;
-    int h = startPoint.y() > endPoint.y() ? startPoint.y() - t : endPoint.y() - t;
+    // Returns the mouse-selected region rect
+    // XXX THIS FUNCTION NEEDS DOCUMENTATION.
+    int l = _startPoint.x() < _endPoint.x() ? _startPoint.x() : _endPoint.x();
+    int t = _startPoint.y() < _endPoint.y() ? _startPoint.y() : _endPoint.y();
+    int w = _startPoint.x() > _endPoint.x() ? _startPoint.x() - l : _endPoint.x() - l;
+    int h = _startPoint.y() > _endPoint.y() ? _startPoint.y() - t : _endPoint.y() - t;
     return QRegion(QRect(l, t, w, h), QRegion::Rectangle);
 }
 
-void MouseCaptureWidget::paintEvent(QPaintEvent *)
+void MouseCaptureWidget::_paintEvent(QPaintEvent *)
 {
+    // Draws the bounding box (?)
+    // XXX THIS FUNCTION NEEDS DOCUMENTATION
     QPainter painter(this);
-    setupPainter(painter);
+    _setupPainter(painter);
+    int xFlair = _startPoint.x() < _endPoint.x() ? 10 : -10;
+    int yFlair = _startPoint.y() < _endPoint.y() ? 10 : -10;
 
-    int xFlair = startPoint.x() < endPoint.x() ? 10 : -10;
-    int yFlair = startPoint.y() < endPoint.y() ? 10 : -10;
-
-    painter.drawLine(startPoint.x() - xFlair, startPoint.y(), endPoint.x() +  xFlair, startPoint.y());
-    painter.drawLine(startPoint.x(), startPoint.y() - yFlair, startPoint.x(), endPoint.y() + yFlair);
-    painter.drawLine(startPoint.x() - xFlair, endPoint.y(), endPoint.x() + xFlair, endPoint.y());
-    painter.drawLine(endPoint.x(), startPoint.y() - yFlair, endPoint.x(), endPoint.y() + yFlair);
-
+    painter.drawLine(_startPoint.x() - xFlair, _startPoint.y(), _endPoint.x() +  xFlair, _startPoint.y());
+    painter.drawLine(_startPoint.x(), _startPoint.y() - yFlair, _startPoint.x(), _endPoint.y() + yFlair);
+    painter.drawLine(_startPoint.x() - xFlair, _endPoint.y(), _endPoint.x() + xFlair, _endPoint.y());
+    painter.drawLine(_endPoint.x(), _startPoint.y() - yFlair, _endPoint.x(), _endPoint.y() + yFlair);
     return;
 }
 
-void MouseCaptureWidget::mousePressEvent(QMouseEvent *event)
+void MouseCaptureWidget::_mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-        startPoint = event->pos();
+    // Handler for mouse clicks, signals capture starts
+    if (event->button() == Qt::LeftButton)
+    {
+        _startPoint = event->pos();
         emit(mcStartCapture(this));
     }
     return;
 }
 
-void MouseCaptureWidget::mouseMoveEvent(QMouseEvent *event)
+void MouseCaptureWidget::_mouseMoveEvent(QMouseEvent *event)
 {
-    endPoint = event->pos();
+    // Handler for mouse moves, adjusts bounding box
+    _endPoint = event->pos();
     update();
     return;
 }
 
-void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent *event)
+void MouseCaptureWidget::_mouseReleaseEvent(QMouseEvent *event)
 {
-    endPoint = event->pos();
-    if((startPoint - endPoint).manhattanLength() > 5)
+    // Handler for mouse button-release, signals capture stop
+    _endPoint = event->pos();
+    if ((_startPoint - _endPoint).manhattanLength() > 5)
     {
-        emit(mcEndCapture(QRegion(QRect(startPoint, endPoint), QRegion::Rectangle)));
-        return;
+        emit(mcEndCapture(QRegion(QRect(_startPoint, _endPoint), QRegion::Rectangle)));
+        return; // XXX TRY NOT TO EARLY RETURN, IT'S BAD FOR BUSINESS.
     }
-
-    for(int i = 0; i < polygon.size(); i++)
+    for (int i = 0; i < _polygon.size(); ++i)
     {
-        if((startPoint - polygon[i]).manhattanLength() < 20)
+        if ((_startPoint - _polygon[i]).manhattanLength() < 20)
         {
-            emit(mcEndCapture(QRegion(polygon)));
-            return;
+            emit(mcEndCapture(QRegion(_polygon)));
+            return; // XXX WHAT I SAID BEFORE ABOUT EARLY RETURNS STILL STANDS.
         }
     }
-    polygon << startPoint;
+    _polygon << _startPoint;
     return;
 }
 
-//setup the painter brush
-void MouseCaptureWidget::setupPainter(QPainter &painter)
+void MouseCaptureWidget::_setupPainter(QPainter &painter)
 {
+    // Initialize the brush for the painter
+    // XXX WHY ISN'T THIS PROCEDURE PART OF THE PAINTER INIT OR CONSTRUCTOR?
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setPen(QPen(Qt::black, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter.setPen(QPen(Qt::black, _penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     return;
  }

@@ -32,9 +32,9 @@ signals:
     void wwRestoreWindow(WebWindow *ww);    // emitted when a window is restored
 
 protected:
-    //void changeEvent(QEvent *event);      // a virtual event function that must be
+    //void _changeEvent(QEvent *event);      // a virtual event function that must be
                                             //      implemented (to keep track of window focus)
-    void resizeEvent(QResizeEvent *);       // virtual event function to update the size of
+    void _resizeEvent(QResizeEvent *);       // virtual event function to update the size of
                                             //      the webview and the mouse tracking
 
 private slots:

@@ -24,7 +24,7 @@ int main(int argc, char **argv)
                             // THE APP WILL CLOSE IF JUST ONE WINDOW CLOSES.
                             // SOMEONE == FAIL. -jb
     QNetworkCookieJar *cookieJar = new QNetworkCookieJar(parent);
-    WebWindow ww(parent, cookieJar, "http://google.com");
+    WebWindow ww(cookieJar, "http://google.com");
     ww.show();
 
     // Run message loop

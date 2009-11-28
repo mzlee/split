@@ -25,7 +25,7 @@ class WebWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    WebWindow(QNetworkCookieJar *jar = 0, QString defaultUrl = "about:blank");
+    WebWindow(QNetworkCookieJar *argCookieJar = 0, QString defaultUrl = "about:blank");
 
 signals:
     void wwFocus(WebWindow *ww);            // emitted when a window gains focus

@@ -23,10 +23,6 @@
 
 WebWindow::WebWindow(QNetworkCookieJar *argCookieJar, QString defaultUrl)
 {
-    // Set the cookie jar
-    _cookieJar = argCookieJar;
-    _ui.WebView->page()->networkAccessManager()->setCookieJar(_cookieJar);
-
     // Setup the window
     _ui.setupUi(this);              // Build form UI
     _ui.ClickArea->setHidden(true); // Hide the clipping field
@@ -36,6 +32,10 @@ WebWindow::WebWindow(QNetworkCookieJar *argCookieJar, QString defaultUrl)
     _clipped = false;
     _geometrySet = false;
     _navigate(defaultUrl);
+
+    // Set the cookie jar
+    _cookieJar = argCookieJar;
+    _ui.WebView->page()->networkAccessManager()->setCookieJar(_cookieJar);
 }
 
 void WebWindow::_setupShortcuts()

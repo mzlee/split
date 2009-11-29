@@ -127,7 +127,7 @@ void WebWindow::_updateStatus(const QString &message)
     return;
 }
 
-void WebWindow::_resizeEvent(QResizeEvent *e)
+void WebWindow::resizeEvent(QResizeEvent *e)
 {
     // Responds to resizing events, sets window geometry
     //  to reflect changes in the new frame. (This is

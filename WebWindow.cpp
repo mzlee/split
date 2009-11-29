@@ -21,11 +21,15 @@
 #include <QShortcut>
 #include <QStateMachine>
 
-WebWindow::WebWindow(QNetworkCookieJar *argCookieJar, QString defaultUrl)
+WebWindow::WebWindow(QWidget *parentArg, QNetworkCookieJar *argCookieJar, QString defaultUrl)
+    : QMainWindow(parentArg)
 {
+    // XXX SHITTY PARENT POINTER
+    _wwparent = parentArg;
     // Setup the window
     _ui.setupUi(this);              // Build form UI
-    _ui.ClickArea->setHidden(true); // Hide the clipping field
+    _ui.ClickArea->lower();         // Hide the clipping field
+    _ui.ClickArea->hide();
     _setupConnections();            // Connect signals/slots
     _setupShortcuts();              // Init keyboard shortcuts
     _setupState();                  // Init the state machine
@@ -197,7 +201,7 @@ void WebWindow::_newWindow(const QUrl &url)
 void WebWindow::_newWindow(const QString &url)
 {
     // Creates a new browser window and directs it to a URL string.
-    WebWindow *w = new WebWindow(_cookieJar, url);
+    WebWindow *w = new WebWindow(_wwparent, _cookieJar, url);
     w->show();
     w->setFocus();
     return;
@@ -252,7 +256,7 @@ void WebWindow::_exitClippingMode() // XXX THIS FUNCTION HAS A SHITTY NAME. IT S
         }
         else
         {
-            WebWindow *w = new WebWindow(_cookieJar, _ui.WebView->url().toString());
+            WebWindow *w = new WebWindow(_wwparent, _cookieJar, _ui.WebView->url().toString());
             w->show();
             w->_storeMask(_storedMasks[i]);
             w->_setClip(_storedMasks[i]);

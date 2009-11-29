@@ -25,7 +25,7 @@ class WebWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    WebWindow(QNetworkCookieJar *argCookieJar = 0, QString defaultUrl = "about:blank");
+    WebWindow(QWidget *parentArg = 0, QNetworkCookieJar *argCookieJar = 0, QString defaultUrl = "about:blank");
 
 signals:
     void wwFocus(WebWindow *ww);            // emitted when a window gains focus
@@ -74,6 +74,7 @@ private:
         //      and it saves the window rect into _windowGeometry.
         //      _mainGeometry is for the WebView(?) aka the client area.
     bool _clipped;
+    QWidget *_wwparent;
     QNetworkCookieJar *_cookieJar;          // Browser's data store for web cookies
 };
 

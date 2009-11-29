@@ -20,11 +20,12 @@ int main(int argc, char **argv)
 
     // Initialize the application
     QApplication SplitApp(argc, argv);
-    QWidget *parent = 0;    // XXX THIS THING SUCKS. IF YOU DON'T SET *parent TO NULL,
+    QWidget *parent = new QWidget();
+    //QWidget *parent = 0;    // XXX THIS THING SUCKS. IF YOU DON'T SET *parent TO NULL,
                             // THE APP WILL CLOSE IF JUST ONE WINDOW CLOSES.
                             // SOMEONE == FAIL. -jb
     QNetworkCookieJar *cookieJar = new QNetworkCookieJar(parent);
-    WebWindow ww(cookieJar, "http://google.com");
+    WebWindow ww(parent, cookieJar, "http://google.com");
     ww.show();
 
     // Run message loop

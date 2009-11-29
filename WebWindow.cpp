@@ -50,7 +50,7 @@ void WebWindow::_setupShortcuts()
     qsc = new QShortcut(QKeySequence("Ctrl+g"),this);               // go
     connect( qsc, SIGNAL(activated()), this, SLOT(_go()) );
     qsc = new QShortcut(QKeySequence("Ctrl+m"),this);               // clip/no-clip
-    connect( qsc, SIGNAL(activated()), _ui.clippingModeButton, SLOT(_click()) );
+    connect( qsc, SIGNAL(activated()), _ui.clippingModeButton, SLOT(click()) );
     qsc = new QShortcut(QKeySequence("Ctrl+l"),this);               // set url bar
     connect( qsc, SIGNAL(activated()), this, SLOT(_selectAddrBar()) );
     return;
@@ -73,7 +73,7 @@ void WebWindow::_setupConnections()
     connect( _ui.backButton, SIGNAL(clicked()), this, SLOT(_back()) );
     connect( _ui.forwardButton, SIGNAL(clicked()), this, SLOT(_forward()) );
     connect( _ui.reloadButton, SIGNAL(clicked()), this, SLOT(_go()) );
-    connect( _ui.stopButton, SIGNAL(clicked()), _ui.WebView, SLOT(_stop()) );
+    connect( _ui.stopButton, SIGNAL(clicked()), _ui.WebView, SLOT(stop()) );
 
     connect( _ui.addressBar, SIGNAL(returnPressed()), this, SLOT(_go()) );
     connect( _ui.WebView, SIGNAL(loadFinished(bool)), this, SLOT(_setWebKitState()) );
@@ -85,7 +85,7 @@ void WebWindow::_setupConnections()
     connect( _ui.actionReload, SIGNAL(triggered()), this, SLOT(_go()) );
     connect( _ui.actionBack, SIGNAL(triggered()), this, SLOT(_back()) );
     connect( _ui.actionForward, SIGNAL(triggered()), this, SLOT(_forward()) );
-    connect( _ui.actionBack, SIGNAL(triggered()), _ui.WebView, SLOT(_stop()) );
+    connect( _ui.actionBack, SIGNAL(triggered()), _ui.WebView, SLOT(stop()) );
 
     connect( _ui.ClickArea, SIGNAL(mcEndCapture(QRegion)), this, SLOT(_storeMask(QRegion)) );
 

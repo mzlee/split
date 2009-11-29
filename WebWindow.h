@@ -1,100 +1,78 @@
+//////////////////////////////////////////////////
+//                                              //
+// WebWindow.h                                  //
+//   -> part of Split                           //
+//                                              //
+// Copyright (c) 2009 Jim Brusstar, Michael Lee //
+//                 Ben Montgomery, Robert Steen //
+//                                              //
+//////////////////////////////////////////////////
+
 #ifndef WEBWINDOW_H
 #define WEBWINDOW_H
 
+#define _OVERRIDE_
+
 #include "ui_WebWindow.h"
-#include <QString>
-#include <QWidget>
-#include <QFocusEvent>
-#include <QStateMachine>
-#include <QByteArray>
 #include <QMainWindow>
+#include <QStateMachine>
+#include <QVector>
 
-class WebWindow : public QMainWindow {
+class QWidget;
+class QNetworkCookieJar;
+class QString;
 
-	Q_OBJECT //this needs to be here for signals/slots
+class WebWindow : public QMainWindow
+{
+    Q_OBJECT
 
 public:
-
-	WebWindow( QWidget *parent = 0 );
+    WebWindow(QNetworkCookieJar *argCookieJar = 0, QString defaultUrl = "about:blank");
 
 signals:
-	
-	//this is emitted when a window gains focus
-	void wwFocus(WebWindow *ww);
-
-	//this is emitted when a window is restored
-	void wwRestoreWindow(WebWindow *ww);
-
-protected:
-	
-	//this is a virtual event function that must be implemented
-	//(used to keep track of window focus)
-        //void changeEvent( QEvent *event );
-
-        //this is a virtual event function that updates the size of the webview and the mouse tracking
-        void resizeEvent(QResizeEvent *);
+    void wwFocus(WebWindow *ww);            // emitted when a window gains focus
+    void wwRestoreWindow(WebWindow *ww);    // emitted when a window is restored
 
 private slots:
-
-        //this creates the basic mask
-        void createMask(QRegion region);
-
-        //this removes the basic mask
-        void removeMask();
-	
-        //this updates the status bar
-	void updateStatus(const QString &q);
-	
-        //navigate the window to the url in the address bar
-	void go();
-
-	//opens a new top level window which contains a browser
-	void newWindow();
-
-	//enters the clipping mode
-        void startClippingMode();
-
-	//exits the clipping mode
-	void exitClippingMode();
-
-	//moves the browser forward
-	void forward();
-
-	//moves the browser backwards
-	void back();
-
-	//restores a clip to its main size
-	void restoreClip();
+    void _selectAddrBar();                  // used by hotkeys
+    //void _createMask(QRegion region);       // creates the basic mask
+    void _removeMask();                     // removes the basic mask
+    void _storeMask(QRegion region);        // stores the mask for later use
+    void _updateStatus(const QString &q);   // updates the status bar
+    void _go();                             // navigates the window to the url in the address bar
+    void _newWindow(const QString &url = "about:blank");    //opens a new top level window which contains a browser
+    void _newWindow(const QUrl &url);
+    void _startClippingMode();              // enters clipping mode
+    void _exitClippingMode();               // exits clipping mode
+    void _setClip(QRegion region);          // sets a clip
+    void _forward();                        // moves the browser forward
+    void _back();                           // moves the browser back
+    void _restoreClip();                    // restores a clip to its original size
+    void _setWebKitState();                 // queries WebKit and sets values accordingly
 
 private:
+    _OVERRIDE_ void resizeEvent(QResizeEvent *);    // virtual event function to update the size of
+                                                    // the webview and the mouse tracking
+    void _setupShortcuts();
+    void _resizeAddressBox();
+    void _navigate(QUrl url);               // navigate the WebWindow's page to url
+    void _navigate(QString url);
+    void _setupConnections();               // sets up the connection
+    void _setupState();                     // sets up the state machine on the WebWindow
+    void _destroySharedClips();             // let other clips know that this window is no longer a clip
 
-        void reload();
-
-        //this sets up the connection
-        void setupConnections();
-
-        //this sets up the state machine on the web window
-        void setupState();
-
-        //navigate the WebWindow's page to url
-        void navigate( QString url );
-
-        //the ui
-        Ui::WebWindow ui;
-
-        //qt State Machine
-        QStateMachine machine;
-
-        //saved geometry
-        QRect mainGeometry;
-        QRect windowGeometry;
-
-        //state flags
-        //TODO: Put this into the finite state machine
-        bool geometrySet;
-        bool clipped;
-
-        QWidget *wwparent;
+    Ui::WebWindow _ui;                      // UI Designer Form
+    QStateMachine _machine;
+    QRect _mainGeometry;                    // saved geometry
+    QRect _windowGeometry;
+    QVector<QRegion> _storedMasks;          // masks
+    QVector<WebWindow*> _sharedClips;
+    bool _geometrySet;                      // state flags
+        // _geometrySet is set TRUE when the window is first clipped
+        //      and it saves the window rect into _windowGeometry.
+        //      _mainGeometry is for the WebView(?) aka the client area.
+    bool _clipped;
+    QNetworkCookieJar *_cookieJar;          // Browser's data store for web cookies
 };
 
 #endif //WEBWINDOW_H

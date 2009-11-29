@@ -1,20 +1,29 @@
+//////////////////////////////////////////////////
+//                                              //
+// main.cpp                                     //
+//   -> part of Split                           //
+//                                              //
+// Copyright (c) 2009 Jim Brusstar, Michael Lee //
+//                 Ben Montgomery, Robert Steen //
+//                                              //
+//////////////////////////////////////////////////
+
 #include <QApplication>
 #include <QObject>
+#include <QNetworkCookieJar>
 #include "WebWindow.h"
 
-int main(int argc, char **argv){
-	
-	//make an application
-    QApplication app(argc, argv);
-	//app.setQuitOnLastWindowClosed(false);
-	QWidget *parent = new QWidget();
+int main(int argc, char **argv)
+{
+    // Initialize our resources
+    Q_INIT_RESOURCE(Resources);
 
-	//make and show the main window
-	WebWindow ww(parent);
-	
-	ww.show();
-	
-	//qt requires this
-	return app.exec();
+    // Initialize the application
+    QApplication SplitApp(argc, argv);
+    QNetworkCookieJar *cookieJar = new QNetworkCookieJar();
+    WebWindow ww(cookieJar, "http://google.com");
+    ww.show();
 
+    // Run message loop
+    return SplitApp.exec();
 }

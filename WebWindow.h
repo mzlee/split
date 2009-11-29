@@ -39,7 +39,7 @@ protected:
 
 private slots:
     void _selectAddrBar();                  // used by hotkeys
-    void _createMask(QRegion region);       // creates the basic mask
+    //void _createMask(QRegion region);       // creates the basic mask
     void _removeMask();                     // removes the basic mask
     void _storeMask(QRegion region);        // stores the mask for later use
     void _updateStatus(const QString &q);   // updates the status bar

@@ -31,11 +31,11 @@ WebWindow::WebWindow(QNetworkCookieJar *argCookieJar, QString defaultUrl)
     _setupState();                  // Init the state machine
     _clipped = false;
     _geometrySet = false;
-    _navigate(defaultUrl);
-
     // Set the cookie jar
     _cookieJar = argCookieJar;
     _ui.WebView->page()->networkAccessManager()->setCookieJar(_cookieJar);
+    // Go to homepage
+    _navigate(defaultUrl);
 }
 
 void WebWindow::_setupShortcuts()
@@ -156,13 +156,13 @@ void WebWindow::_resizeAddressBox()
     return;
 }
 
-void WebWindow::_createMask(QRegion region)
-{
-    // Creates a clipping mask for the web view.
-    setMask(region);
-    _ui.WebView->blockSignals(true); // XXX WHAT IS THIS FOR? IT LOOKS LIKE A HACK.
-    return;
-}
+//void WebWindow::_createMask(QRegion region)
+//{
+//    // Creates a clipping mask for the web view.
+//    setMask(region);
+//    _ui.WebView->blockSignals(true); // XXX WHAT IS THIS FOR? IT LOOKS LIKE A HACK.
+//    return;
+//}
 
 void WebWindow::_storeMask(QRegion region)
 {
@@ -174,7 +174,7 @@ void WebWindow::_storeMask(QRegion region)
 void WebWindow::_removeMask()
 {
     // Clears the saved clipping masks.
-    clearMask();
+    //clearMask();
     _ui.WebView->blockSignals(false);   // XXX THE OTHER HALF OF THE ::_createMask HACK...
    return;
 }
@@ -266,7 +266,7 @@ void WebWindow::_exitClippingMode() // XXX THIS FUNCTION HAS A SHITTY NAME. IT S
                                                     // XXX WHAT, WHY? SAY THE _EFFECTS_ OF THE CODE.
     {
         _sharedClips[i]->_sharedClips.push_back(this);
-        for (int j = 0; j < _sharedClips.size(); j++)
+        for (int j = 0; j < _sharedClips.size(); ++j)
         {
             if (i != j)
             {
@@ -279,10 +279,10 @@ void WebWindow::_exitClippingMode() // XXX THIS FUNCTION HAS A SHITTY NAME. IT S
 
 void WebWindow::_setClip(QRegion region)
 {
-    // XXX THIS FUNCTION NEEDS DOCUMENTATION! WHAT WERE YOU THINKING?!
+    // XXX THIS FUNCTION NEEDS DOCUMENTATION! AGHH?!
 
     _clipped = true;
-    _ui.NavigationBox->setHidden(true);
+    _ui.NavigationBox->hide();
 
     _windowGeometry = _ui.WebView->geometry();
     _mainGeometry = this->geometry();
@@ -295,7 +295,7 @@ void WebWindow::_setClip(QRegion region)
     this->setGeometry(_mainGeometry.left(),
                       _mainGeometry.top(),
                       region.boundingRect().width(),
-                      region.boundingRect().height() + 40);
+                      region.boundingRect().height());
     QRegion newRegion;
     QPoint p = region.boundingRect().topLeft();
     for (int i = 0; i < region.rects().size(); ++i)
@@ -305,12 +305,13 @@ void WebWindow::_setClip(QRegion region)
         rect.setHeight(rect.height() + 20);
         newRegion += QRegion(rect, QRegion::Rectangle);
     }
-    setMask(newRegion);
-
+    _ui.statusBar->hide();
+    _ui.menuBar->hide();
     _ui.ClickArea->setDisabled(true);
     _ui.ClickArea->lower();
     _ui.ClickArea->update();
 
+    this->setFixedSize(QSize(this->geometry().width(), this->geometry().height()));
     _ui.WebView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     return;
 }
@@ -360,14 +361,18 @@ void WebWindow::_restoreClip()
     // XXX THIS FUNCTION NEEDS DOCUMENTATION! WHAT IS THIS, THE OPPPOSITE OF setClip?!
     //  I SHOULD KNOW THAT!
     _removeMask();
+    this->setFixedSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     _ui.WebView->setGeometry(_windowGeometry);
     this->setGeometry(_mainGeometry);
-    _ui.NavigationBox->setVisible(true);
+    _ui.NavigationBox->show();
+    _ui.statusBar->show();
+    _ui.menuBar->show();
     _clipped = false;
-    update();
-    _destroySharedClips();  // Tell other clips that this one has been restored // XXX WHY?
+    _destroySharedClips();  // Tell other clips that this one has been restored
+                            // XXX WHY?
     _ui.WebView->page()->setLinkDelegationPolicy(QWebPage::DontDelegateLinks);
         // Tell the page to start capturing link clicks again
+    update();
     return;
 }
 

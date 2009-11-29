@@ -11,6 +11,8 @@
 #ifndef MOUSECAPTUREWIDGET_H
 #define MOUSECAPTUREWIDGET_H
 
+#define _OVERRIDE_
+
 #include <QWidget>
 
 class MouseCaptureWidget : public QWidget
@@ -25,13 +27,11 @@ signals:
     void mcStartCapture(MouseCaptureWidget *mc);
     void mcEndCapture(QRegion);
 
-protected:
-    void _paintEvent(QPaintEvent *);
-    void _mouseMoveEvent(QMouseEvent *event);
-    void _mousePressEvent(QMouseEvent *event);
-    void _mouseReleaseEvent(QMouseEvent *event);
-
 private:
+    _OVERRIDE_ void paintEvent(QPaintEvent *);
+    _OVERRIDE_ void mouseMoveEvent(QMouseEvent *event);
+    _OVERRIDE_ void mousePressEvent(QMouseEvent *event);
+    _OVERRIDE_ void mouseReleaseEvent(QMouseEvent *event);
     void _setupPainter(QPainter& painter);
 
     int _penWidth;

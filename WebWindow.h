@@ -11,6 +11,8 @@
 #ifndef WEBWINDOW_H
 #define WEBWINDOW_H
 
+#define _OVERRIDE_
+
 #include "ui_WebWindow.h"
 #include <QMainWindow>
 #include <QStateMachine>
@@ -31,10 +33,6 @@ signals:
     void wwFocus(WebWindow *ww);            // emitted when a window gains focus
     void wwRestoreWindow(WebWindow *ww);    // emitted when a window is restored
 
-protected:
-    void resizeEvent(QResizeEvent *);       // virtual event function to update the size of
-                                            //      the webview and the mouse tracking
-
 private slots:
     void _selectAddrBar();                  // used by hotkeys
     //void _createMask(QRegion region);       // creates the basic mask
@@ -53,6 +51,8 @@ private slots:
     void _setWebKitState();                 // queries WebKit and sets values accordingly
 
 private:
+    _OVERRIDE_ void resizeEvent(QResizeEvent *);    // virtual event function to update the size of
+                                                    // the webview and the mouse tracking
     void _setupShortcuts();
     void _resizeAddressBox();
     void _navigate(QUrl url);               // navigate the WebWindow's page to url

@@ -33,7 +33,7 @@ QRegion MouseCaptureWidget::getCapturedRegion()
     return QRegion(QRect(l, t, w, h), QRegion::Rectangle);
 }
 
-void MouseCaptureWidget::_paintEvent(QPaintEvent *)
+_OVERRIDE_ void MouseCaptureWidget::paintEvent(QPaintEvent *)
 {
     // Draws the bounding box (?)
     // XXX THIS FUNCTION NEEDS DOCUMENTATION
@@ -49,7 +49,7 @@ void MouseCaptureWidget::_paintEvent(QPaintEvent *)
     return;
 }
 
-void MouseCaptureWidget::_mousePressEvent(QMouseEvent *event)
+_OVERRIDE_ void MouseCaptureWidget::mousePressEvent(QMouseEvent *event)
 {
     // Handler for mouse clicks, signals capture starts
     if (event->button() == Qt::LeftButton)
@@ -60,7 +60,7 @@ void MouseCaptureWidget::_mousePressEvent(QMouseEvent *event)
     return;
 }
 
-void MouseCaptureWidget::_mouseMoveEvent(QMouseEvent *event)
+_OVERRIDE_ void MouseCaptureWidget::mouseMoveEvent(QMouseEvent *event)
 {
     // Handler for mouse moves, adjusts bounding box
     _endPoint = event->pos();
@@ -68,7 +68,7 @@ void MouseCaptureWidget::_mouseMoveEvent(QMouseEvent *event)
     return;
 }
 
-void MouseCaptureWidget::_mouseReleaseEvent(QMouseEvent *event)
+_OVERRIDE_ void MouseCaptureWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     // Handler for mouse button-release, signals capture stop
     _endPoint = event->pos();
